@@ -9,17 +9,11 @@
 #ifndef ARK_CPP_HPP
 #define ARK_CPP_HPP
 
-#include <Arduino.h>
-
-#include "../include/include.h"
-
-#include "Ark-Cpp/helpers/helpers.h"
-
-#include "Ark-Cpp/types/types.h"
-#include "Ark-Cpp/models/models.h"
-#include "Ark-Cpp/constants/constants.h"
-#include "Ark-Cpp/utilities/utilities.h"
-#include "Ark-Cpp/api/api.h"
+#include "types/types.h"
+#include "models/models.h"
+#include "constants/constants.h"
+#include "utilities/utilities.h"
+#include "api/api.h"
 
 // #define APIManager ARK::API::Manager
 

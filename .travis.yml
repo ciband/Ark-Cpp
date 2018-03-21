@@ -1,16 +1,19 @@
 language: cpp
-
+  
 matrix:
   include:
     - os: linux
       dist: trusty
       sudo: required
+      group: deprecated-2017Q3
+      
       addons:
         apt:
           sources:
             - ubuntu-toolchain-r-test
           packages:
             - g++-7
+            
       env:
         - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
         
@@ -34,14 +37,23 @@ matrix:
     - os: osx
       osx_image: xcode9.3beta
       env:
-        #- MATRIX_EVAL="rm -rdf '/usr/local/include/c++' && brew install gcc5 && CC=gcc-5 && CXX=g++-5"
         - MATRIX_EVAL=""
-        
  
 before_install:
     - eval "${MATRIX_EVAL}"
+ 
+install:
+  - sudo pip install -U platformio
+  - platformio update
+  # install ArduinoJson (64), HttpClient (66), ArduinoUnit (946)
+  - platformio lib -g install 64 66 946
+   # - "chmod +x ${INSTALL_SCRIPT} && ${INSTALL_SCRIPT}"
 
 script:
+  # run PlatformIO builds
+  - platformio run
+  - platformio run -d ./test
+  # run desktop builds
   - cmake .
   - cmake --build .
   # run Gtest
