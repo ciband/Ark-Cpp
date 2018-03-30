@@ -31,7 +31,10 @@ ARK::API::Account::Respondable::Balances ARK::API::Account::Gettable::balancefro
 {
   auto jString = ARK::Utilities::make_json_string(_jsonStr);
 
-  return ARK::API::Account::Respondable::Balances(Balance(jString->valueFor("balance").c_str()), Balance(jString->valueFor("unconfirmedBalance").c_str()));
+  return ARK::API::Account::Respondable::Balances(
+	  Balance(jString->get_value<String>("balance").c_str()), 
+	  Balance(jString->get_value<String>("unconfirmedBalance").c_str())
+  );
 };
 /*  ==================================  */
 /*  ==========================================================================  */
@@ -66,7 +69,7 @@ Publickey ARK::API::Account::Gettable::publickeyfromJSON(const char* const _json
 {
   auto jString = ARK::Utilities::make_json_string(_jsonStr);
 
-  return Publickey(jString->valueFor("publicKey").c_str());
+  return Publickey(jString->get_value<String>("publicKey").c_str());
 };
 /*  ====================================  */
 /*  ==========================================================================  */
@@ -103,7 +106,7 @@ Balance ARK::API::Account::Gettable::delegatesFeefromJSON(const char* const _jso
 {
   auto jString = ARK::Utilities::make_json_string(_jsonStr);
 
-  return Balance(jString->valueFor("fee").c_str());
+  return Balance(jString->get_value<String>("fee").c_str());
 };
 /*  =========================================  */
 /*  ==========================================================================  */
@@ -145,21 +148,24 @@ ARK::Delegate ARK::API::Account::Gettable::delegates(
   }]
 }
 */
+
 ARK::Delegate ARK::API::Account::Gettable::delegatesfromJSON(const char* const _jsonStr)
 {
   auto jString = ARK::Utilities::make_json_string(_jsonStr);
-
-    return Delegate(
-        jString->subarrayValueIn("delegates", 0, "username").c_str(),
-        jString->subarrayValueIn("delegates", 0, "address").c_str(),
-        jString->subarrayValueIn("delegates", 0, "publicKey").c_str(),
-        jString->subarrayValueIn("delegates", 0, "vote").c_str(),
-        convert_to_int(jString->subarrayValueIn("delegates", 0, "producedblocks")),
-        convert_to_int(jString->subarrayValueIn("delegates", 0, "missedblocks")),
-        convert_to_int(jString->subarrayValueIn("delegates", 0, "rate")),
-        convert_to_float(jString->subarrayValueIn("delegates", 0, "approval")),
-        convert_to_float(jString->subarrayValueIn("delegates", 0, "productivity"))
-    );
+	for (auto delegate : jString->get_array("delegates")) {
+		// return the first for now
+		return Delegate(
+			delegate->get_value<std::string>("username").c_str(),
+			delegate->get_value<std::string>("address").c_str(),
+			delegate->get_value<std::string>("publicKey").c_str(),
+			delegate->get_value<std::string>("vote").c_str(),
+			delegate->get_value<int>("producedblocks"),
+			delegate->get_value<int>("missedblocks"),
+			delegate->get_value<int>("rate"),
+			delegate->get_value<float>("approval"),
+			delegate->get_value<float>("productivity")
+		);
+	}
 };
 /*  ======================================  */
 /*  ==========================================================================  */

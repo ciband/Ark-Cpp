@@ -48,12 +48,6 @@ ARK::Transaction ARK::API::Transaction::Gettable::transaction(
 ARK::Transaction ARK::API::Transaction::Gettable::transactionfromJSON(const char* const jsonStr) {
     auto jString = ARK::Utilities::make_json_string(jsonStr); 
 
-    /*char temp[34];
-    jString->valueIn("transaction", "senderId").toCharArray(temp, 34);
-
-    char temp2[34];
-    jString->valueIn("transaction", "recipientId").toCharArray(temp, 34);*/
-
     return ARK::Transaction(
         jString->valueIn("transaction", "id").c_str(),
         jString->valueIn("transaction", "blockid").c_str(),
@@ -64,9 +58,7 @@ ARK::Transaction ARK::API::Transaction::Gettable::transactionfromJSON(const char
         jString->valueIn("transaction", "fee").c_str(),
         jString->valueIn("transaction", "vendorField").c_str(),
         jString->valueIn("transaction", "senderId").c_str(),
-       // temp,
         jString->valueIn("transaction", "recipientId").c_str(),
-        //temp2,
         jString->valueIn("transaction", "senderPublicKey").c_str(),
         jString->valueIn("transaction", "signature").c_str(),
         jString->valueIn("transaction", "confirmations").c_str()
@@ -233,58 +225,31 @@ ARK::API::Transaction::Respondable::Unconfirmed ARK::API::Transaction::Gettable:
 }
 */
 ARK::API::Transaction::Respondable::Unconfirmed ARK::API::Transaction::Gettable::transactionUnconfirmedfromJSON(const char* const jsonStr) {
-  /*auto jString = ARK::Utilities::make_json_string(jsonStr); 
-  String resp;
-  if (strstr(jsonStr, "Transaction not found") != nullptr) {
-    resp += "There are currently No unconfirmed transactions by that transactionID";
-  } else {
-    ARK::Transaction transaction(
-      jString->valueIn("transaction", "id").c_str(),
-      jString->valueIn("transaction", "blockid").c_str(),
-      jString->valueIn("transaction", "height").c_str(),
-      convert_to_int(jString->valueIn("transaction", "type")),
-      jString->valueIn("transaction", "timestamp").c_str(),
-      jString->valueIn("transaction", "amount").c_str(),
-      jString->valueIn("transaction", "fee").c_str(),
-      jString->valueIn("transaction", "vendorField").c_str(),
-      jString->valueIn("transaction", "senderId").c_str(),
-      jString->valueIn("transaction", "recipientId").c_str(),
-      jString->valueIn("transaction", "senderPublicKey").c_str(),
-      jString->valueIn("transaction", "signature").c_str(),
-      jString->valueIn("transaction", "confirmations").c_str()
-    );
-    char buf[128] = {};
-    transaction.description(buf, sizeof(buf) / sizeof(buf[0]));
-    resp += buf;
-  }
-  return resp;*/
-
-	//ARK::Utilities::JSONParser parser(jsonStr, strlen(jsonStr)); 
 	auto parser = ARK::Utilities::make_json_string(jsonStr);
 			
-			int txCount = subCount(jsonStr, "id");
+	int txCount = subCount(jsonStr, "id");
 
-			std::unique_ptr<ARK::Transaction[]> transactions(new ARK::Transaction[txCount]);
+	std::unique_ptr<ARK::Transaction[]> transactions(new ARK::Transaction[txCount]);
 			
-			for (int i = 0; i < txCount; i++)
-			{
-				transactions[i] = ARK::Transaction(
-					parser->valueIn("transaction", "id").c_str(),
-					parser->valueIn("transaction", "blockid").c_str(),
-					parser->valueIn("transaction", "height").c_str(),
-					convert_to_int(parser->valueIn("transaction", "type")),
-					parser->valueIn("transaction", "timestamp").c_str(),
-					parser->valueIn("transaction", "amount").c_str(),
-					parser->valueIn("transaction", "fee").c_str(),
-					parser->valueIn("transaction", "vendorField").c_str(),
-					parser->valueIn("transaction", "senderId").c_str(),
-					parser->valueIn("transaction", "recipientId").c_str(),
-					parser->valueIn("transaction", "senderPublicKey").c_str(),
-					parser->valueIn("transaction", "signature").c_str(),
-					parser->valueIn("transaction", "confirmations").c_str()
-				);
-			}
-			return ARK::API::Transaction::Respondable::Unconfirmed(transactions.get(), txCount);
+	for (int i = 0; i < txCount; i++)
+	{
+		transactions[i] = ARK::Transaction(
+			parser->valueIn("transaction", "id").c_str(),
+			parser->valueIn("transaction", "blockid").c_str(),
+			parser->valueIn("transaction", "height").c_str(),
+			convert_to_int(parser->valueIn("transaction", "type")),
+			parser->valueIn("transaction", "timestamp").c_str(),
+			parser->valueIn("transaction", "amount").c_str(),
+			parser->valueIn("transaction", "fee").c_str(),
+			parser->valueIn("transaction", "vendorField").c_str(),
+			parser->valueIn("transaction", "senderId").c_str(),
+			parser->valueIn("transaction", "recipientId").c_str(),
+			parser->valueIn("transaction", "senderPublicKey").c_str(),
+			parser->valueIn("transaction", "signature").c_str(),
+			parser->valueIn("transaction", "confirmations").c_str()
+		);
+	}
+return ARK::API::Transaction::Respondable::Unconfirmed(transactions.get(), txCount);
 }
 /*  =====================================================  */
 /*  ==========================================================================  */

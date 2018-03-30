@@ -8,16 +8,16 @@
 /*  ARK::API::Block::Gettable::block  */
 /*  /api/blocks/get?id=_blockID */
 ARK::Block ARK::API::Block::Gettable::block(
-    ARK::Utilities::Network::Connector& _netConnector,
-    const char* const _blockId)
+    ARK::Utilities::Network::Connector& netConnector,
+    const char* const blockId)
 {
     char uri[256] = { '\0' }; // TODO:  check size
 
     strcpy(uri, ARK::API::Paths::Block::get_s);
     strcat(uri, "?id=");
-    strcat(uri, _blockId);
+    strcat(uri, blockId);
 
-    auto callback = _netConnector.cb(uri);
+    auto callback = netConnector.cb(uri);
     return ARK::API::Block::Gettable::blockfromJSON(callback);
 };
 
@@ -43,28 +43,29 @@ ARK::Block ARK::API::Block::Gettable::block(
   }
 }
 */
-ARK::Block ARK::API::Block::Gettable::blockfromJSON(const char* const _jsonStr)
-{
-    auto jString = ARK::Utilities::make_json_string(_jsonStr);
 
-    return ARK::Block(
-        jString->valueIn("block", "id").c_str(),
-        convert_to_int(jString->valueIn("block", "version")),
-        jString->valueIn("block", "timestamp").c_str(),
-        jString->valueIn("block", "height").c_str(),
-        jString->valueIn("block", "previousBlock").c_str(),
-        jString->valueIn("block", "numberOfTransactions").c_str(),
-        jString->valueIn("block", "totalAmount").c_str(),
-        jString->valueIn("block", "totalFee").c_str(),
-        jString->valueIn("block", "reward").c_str(),
-        jString->valueIn("block", "payloadLength").c_str(),
-        jString->valueIn("block", "payloadHash").c_str(),
-        jString->valueIn("block", "generatorPublicKey").c_str(),
-        jString->valueIn("block", "generatorId").c_str(),
-        jString->valueIn("block", "blockSignature").c_str(),
-        jString->valueIn("block", "confirmations").c_str(),
-        jString->valueIn("block", "totalForged").c_str()
-    );
+ARK::Block ARK::API::Block::Gettable::blockfromJSON(const char* const jsonStr)
+{
+	auto jString = ARK::Utilities::make_json_string(jsonStr);
+
+	return ARK::Block(
+		jString->valueIn("block", "id").c_str(),
+		convert_to_int(jString->valueIn("block", "version")),
+		jString->valueIn("block", "timestamp").c_str(),
+		jString->valueIn("block", "height").c_str(),
+		jString->valueIn("block", "previousBlock").c_str(),
+		jString->valueIn("block", "numberOfTransactions").c_str(),
+		jString->valueIn("block", "totalAmount").c_str(),
+		jString->valueIn("block", "totalFee").c_str(),
+		jString->valueIn("block", "reward").c_str(),
+		jString->valueIn("block", "payloadLength").c_str(),
+		jString->valueIn("block", "payloadHash").c_str(),
+		jString->valueIn("block", "generatorPublicKey").c_str(),
+		jString->valueIn("block", "generatorId").c_str(),
+		jString->valueIn("block", "blockSignature").c_str(),
+		jString->valueIn("block", "confirmations").c_str(),
+		jString->valueIn("block", "totalForged").c_str()
+	);
 }
 /*  ==============================  */
 /*  ==========================================================================  */
@@ -79,80 +80,84 @@ ARK::Block ARK::API::Block::Gettable::blockfromJSON(const char* const _jsonStr)
 /*  ===============================  */
 /*  ARK::API::Block::Gettable::blocks  */
 // /*  /api/blocks */
-// String blocks(ARK::Utilities::Network::Connector _netConnector) {
-//   String uri = ARK::API::Paths::Block::blocks_s;
-//   String callback = _netConnector.cb(uri);
-//   if (callback.indexOf("false") >= 0) { return callback; };
-//   return ARK::API::Block::Gettable::blocksfromJSON(callback);
-// };
+ std::unique_ptr<ARK::Block[]> ARK::API::Block::Gettable::blocks(ARK::Utilities::Network::Connector _netConnector) {
+   auto callback = _netConnector.cb(ARK::API::Paths::Block::blocks_s);
+   //if (callback.indexOf("false") >= 0) { return callback; };
+   return ARK::API::Block::Gettable::blocksfromJSON(callback);
+ }
 
-// /*
-// {
-//   "success":true,
-//   "blocks":[
-//     {
-//       "id":"_blockID",
-//       "version":_version,
-//       "timestamp":_timestamp,
-//       "height":_height,
-//       "previousBlock":"_previousBlock",
-//       "numberOfTransactions":_numberOfTransactions,
-//       "totalAmount":_totalAmount,
-//       "totalFee":_totalFee,
-//       "reward":_reward,
-//       "payloadLength":_payloadLength,
-//       "payloadHash":"_payloadHash",
-//       "generatorPublicKey":"_generatorPubkey",
-//       "generatorId":"_generatorId",
-//       "blockSignature":"_blockSig",
-//       "confirmations":_confirmations,
-//       "totalForged":"_totalForged"
-//     },
-//     ...
-//     {
-//       "id":"_blockID",
-//       "version":_version,
-//       "timestamp":_timestamp,
-//       "height":_height,
-//       "previousBlock":"_previousBlock",
-//       "numberOfTransactions":_numberOfTransactions,
-//       "totalAmount":_totalAmount,
-//       "totalFee":_totalFee,
-//       "reward":_reward,
-//       "payloadLength":_payloadLength,
-//       "payloadHash":"_payloadHash",
-//       "generatorPublicKey":"_generatorPubkey",
-//       "generatorId":"_generatorId",
-//       "blockSignature":"_blockSig",
-//       "confirmations":_confirmations,
-//       "totalForged":"_totalForged"
-//     }
-//   ],
-//   "count":2313747
-// }
-// */
-// String blocksfromJSON(String _jsonStr) {
-//   auto jString = ARK::Utilities::make_json_string(_jsonStr);
-//   // ARK::Block block = {
-//   //   jString->valueFor("id").toInt(),
-//   //   jString->valueFor("version").toFloat(),
-//   //   jString->valueFor("timestamp").toInt(),
-//   //   jString->valueFor("height").toInt(),
-//   //   jString->valueFor("previousBlock").toInt(),
-//   //   jString->valueFor("numberOfTransactions").toInt(),
-//   //   jString->valueFor("totalAmount").toFloat(),
-//   //   jString->valueFor("totalFee").toFloat(),
-//   //   jString->valueFor("reward").toInt(),
-//   //   jString->valueFor("payloadLength").toInt(),
-//   //   jString->valueFor("payloadHash"),
-//   //   jString->valueFor("generatorPublicKey"),
-//   //   jString->valueFor("generatorId"),
-//   //   jString->valueFor("blockSignature"),
-//   //   jString->valueFor("confirmations").toInt(),
-//   //   jString->valueFor("totalForged").toInt()
-//   // };
-//   return "";//block.description();
-// };
+ /*
+ {
+   "success":true,
+   "blocks":[
+     {
+       "id":"_blockID",
+       "version":_version,
+       "timestamp":_timestamp,
+       "height":_height,
+       "previousBlock":"_previousBlock",
+       "numberOfTransactions":_numberOfTransactions,
+       "totalAmount":_totalAmount,
+       "totalFee":_totalFee,
+       "reward":_reward,
+       "payloadLength":_payloadLength,
+       "payloadHash":"_payloadHash",
+       "generatorPublicKey":"_generatorPubkey",
+       "generatorId":"_generatorId",
+       "blockSignature":"_blockSig",
+       "confirmations":_confirmations,
+       "totalForged":"_totalForged"
+     },
+     ...
+     {
+       "id":"_blockID",
+       "version":_version,
+       "timestamp":_timestamp,
+       "height":_height,
+       "previousBlock":"_previousBlock",
+       "numberOfTransactions":_numberOfTransactions,
+       "totalAmount":_totalAmount,
+       "totalFee":_totalFee,
+       "reward":_reward,
+       "payloadLength":_payloadLength,
+       "payloadHash":"_payloadHash",
+       "generatorPublicKey":"_generatorPubkey",
+       "generatorId":"_generatorId",
+       "blockSignature":"_blockSig",
+       "confirmations":_confirmations,
+       "totalForged":"_totalForged"
+     }
+   ],
+   "count":2313747
+ }
+ */
+ std::unique_ptr<ARK::Block[]> ARK::API::Block::Gettable::blocksfromJSON(const char* const jsonStr) {
+	auto jString = ARK::Utilities::make_json_string(jsonStr);
+	int count;
+	std::unique_ptr<ARK::Block[]> blocks(new ARK::Block[count]);
+	for (auto i = 0; i < count; ++i) {
+		jString->subarrayValueIn("blocks", i, "block");
+		blocks[i] = ARK::Block(
+			jString->valueIn("block", "id").c_str(),
+			convert_to_int(jString->valueIn("block", "version")),
+			jString->valueIn("block", "timestamp").c_str(),
+			jString->valueIn("block", "height").c_str(),
+			jString->valueIn("block", "previousBlock").c_str(),
+			jString->valueIn("block", "numberOfTransactions").c_str(),
+			jString->valueIn("block", "totalAmount").c_str(),
+			jString->valueIn("block", "totalFee").c_str(),
+			jString->valueIn("block", "reward").c_str(),
+			jString->valueIn("block", "payloadLength").c_str(),
+			jString->valueIn("block", "payloadHash").c_str(),
+			jString->valueIn("block", "generatorPublicKey").c_str(),
+			jString->valueIn("block", "generatorId").c_str(),
+			jString->valueIn("block", "blockSignature").c_str(),
+			jString->valueIn("block", "confirmations").c_str(),
+			jString->valueIn("block", "totalForged").c_str()
+		);
+	}
+	return blocks;
+}
 /*  ===============================  */
 /*  ==========================================================================  */
 /*  ==========================================================================  */

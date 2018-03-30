@@ -6,28 +6,23 @@
 #include "api/blockable/block_respondable.h"
 #include "models/block.h"
 #include "utilities/connector.h"
+#include "utilities/json.h"
 #include "models/fees.h"
 
-namespace ARK
-{
-namespace API
-{
-namespace Block
-{
+namespace ARK {
+namespace API {
+namespace Block {
 
 /*************************************************
 *  PROTECTED: ARK::API::Block::Gettable
 **************************************************/
-class Gettable
-{
-	protected:
-    /*************************************************
-    * ARK::API::Block::Gettable::block
-    *   api/blocks/get?id=_blockID
-    **************************************************/
-    ARK::Block block(
-        ARK::Utilities::Network::Connector& _netConnector,
-        const char* const _blockId);
+class Gettable {
+protected:
+	/*************************************************
+	* ARK::API::Block::Gettable::block
+	*   api/blocks/get?id=_blockID
+	**************************************************/
+	ARK::Block block(ARK::Utilities::Network::Connector& _netConnector, const char* const _blockId);
 
 /*************************************************
     *
@@ -55,18 +50,21 @@ class Gettable
     * }
     *
     **************************************************/
-    ARK::Block blockfromJSON(const char* const _jsonStr);
-    ARK::Block blockfromJSON(const String& _jsonStr) {
-        return blockfromJSON(_jsonStr.c_str());
+    ARK::Block blockfromJSON(const char* const jsonStr);
+    ARK::Block blockfromJSON(const String& jsonStr) {
+        return blockfromJSON(jsonStr.c_str());
     }
 /*  ==========================================================================  */
 
 /*  ==========================================================================  */
-  /*    BROKEN: fix for large callbacks   */
-  /*   blocks callback is ~63,712 bytes   */
-  /*  /api/blocks  */
-  // String blocks(ARK::Utilities::Network::Connector _netConnector) {
-  // String blocksfromJSON(String _jsonStr) {
+	/*    BROKEN: fix for large callbacks   */
+	/*   blocks callback is ~63,712 bytes   */
+	/*  /api/blocks  */
+	std::unique_ptr<ARK::Block[]> blocks(ARK::Utilities::Network::Connector netConnector);
+	std::unique_ptr<ARK::Block[]> blocksfromJSON(const char* const jsonStr);
+	std::unique_ptr<ARK::Block[]> blocksfromJSON(const String& jsonStr) {
+		return blocksfromJSON(jsonStr.c_str());
+	}
 
 /*************************************************
     * ARK::API::Block::Gettable::epoch
@@ -241,101 +239,8 @@ class Gettable
 };
 /*  ====================================  */
 /*  ==========================================================================  */
-};
-};
-};
-
-/**************************************************************************************************/
-/*************************************************/
-/*************************************************
-*   BROKEN: fix for large callbacks
-*   blocks callback is ~63,712 bytes
-**************************************************/
-/*************************************************/
-/*************************************************
-* ARK::API::Block::Gettable::blocks
-*   /api/blocks
-**************************************************/
-// String blocks(ARK::Utilities::Network::Connector _netConnector) {
-//   String uri = ARK::API::Paths::Block::blocks_s;
-//   String callback = _netConnector.cb(uri);
-//   if (callback.indexOf("false") >= 0) { return callback; };
-//   return ARK::API::Block::Gettable::blocksfromJSON(callback);
-// };
-
-// /*
-// {
-//   "success":true,
-//   "blocks":[
-//     {
-//       "id":"_blockID",
-//       "version":_version,
-//       "timestamp":_timestamp,
-//       "height":_height,
-//       "previousBlock":"_previousBlock",
-//       "numberOfTransactions":_numberOfTransactions,
-//       "totalAmount":_totalAmount,
-//       "totalFee":_totalFee,
-//       "reward":_reward,
-//       "payloadLength":_payloadLength,
-//       "payloadHash":"_payloadHash",
-//       "generatorPublicKey":"_generatorPubkey",
-//       "generatorId":"_generatorId",
-//       "blockSignature":"_blockSig",
-//       "confirmations":_confirmations,
-//       "totalForged":"_totalForged"
-//     },
-//     ...
-//     {
-//       "id":"_blockID",
-//       "version":_version,
-//       "timestamp":_timestamp,
-//       "height":_height,
-//       "previousBlock":"_previousBlock",
-//       "numberOfTransactions":_numberOfTransactions,
-//       "totalAmount":_totalAmount,
-//       "totalFee":_totalFee,
-//       "reward":_reward,
-//       "payloadLength":_payloadLength,
-//       "payloadHash":"_payloadHash",
-//       "generatorPublicKey":"_generatorPubkey",
-//       "generatorId":"_generatorId",
-//       "blockSignature":"_blockSig",
-//       "confirmations":_confirmations,
-//       "totalForged":"_totalForged"
-//     }
-//   ],
-//   "count":2313747
-// }
-// */
-/*************************************************
-*
-*
-**************************************************/
-// String blocksfromJSON(String jsonStr) {
-//   ARK::Utilities::JSONString jString(jsonStr);
-//   // ARK::Block block = {
-//   //   jString.valueFor("id").toInt(),
-//   //   jString.valueFor("version").toFloat(),
-//   //   jString.valueFor("timestamp").toInt(),
-//   //   jString.valueFor("height").toInt(),
-//   //   jString.valueFor("previousBlock").toInt(),
-//   //   jString.valueFor("numberOfTransactions").toInt(),
-//   //   jString.valueFor("totalAmount").toFloat(),
-//   //   jString.valueFor("totalFee").toFloat(),
-//   //   jString.valueFor("reward").toInt(),
-//   //   jString.valueFor("payloadLength").toInt(),
-//   //   jString.valueFor("payloadHash"),
-//   //   jString.valueFor("generatorPublicKey"),
-//   //   jString.valueFor("generatorId"),
-//   //   jString.valueFor("blockSignature"),
-//   //   jString.valueFor("confirmations").toInt(),
-//   //   jString.valueFor("totalForged").toInt()
-//   // };
-//   return "";//block.description();
-// };
-/*************************************************/
-/*************************************************/
-/**************************************************************************************************/
+}
+}
+}
 
 #endif
