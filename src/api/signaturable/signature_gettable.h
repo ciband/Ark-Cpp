@@ -21,18 +21,7 @@ protected:
     **************************************************/
     Balance fee(ARK::Utilities::Network::Connector& _netConnector);
 
-/*************************************************
-    *
-    *	{
-    *		"success":true,
-    *		"fee":  Balance
-    *	}
-    *
-    **************************************************/
-    Balance feefromJSON(const char* const _jsonStr);
-    Balance feefromJSON(const String& _jsonStr) {
-        return feefromJSON(_jsonStr.c_str());
-    }
+
     /*************************************************/
 
 };

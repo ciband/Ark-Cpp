@@ -29,19 +29,7 @@ class Gettable
         ARK::Utilities::Network::Connector& netManager,
         const Address& arkAddress);
 
-/*************************************************
-		*
-		*	{
-		*		"success":true,
-		*		"balance":  "Balance",
-		*		"unconfirmedBalance": "Balance"
-		*	}
-		*
-		**************************************************/
-    ARK::API::Account::Respondable::Balances balancefromJSON(const char* const _jsonStr);
-    ARK::API::Account::Respondable::Balances balancefromJSON(const String& _jsonStr) {
-        return balancefromJSON(_jsonStr.c_str());
-    }
+
 /*************************************************/
 
 /*************************************************
@@ -52,18 +40,7 @@ class Gettable
         ARK::Utilities::Network::Connector& netManager,
         const Address& arkAddress);
 
-/*************************************************
-		*
-		*	{
-		*		"success":true,
-		*		"publicKey":  "Publickey"
-		*	}
-		*
-		**************************************************/
-    Publickey publickeyfromJSON(const char* const _jsonStr);
-    Publickey publickeyfromJSON(const String& _jsonStr) {
-        return publickeyfromJSON(_jsonStr.c_str());
-    }
+/
 
 
 /*************************************************
@@ -74,18 +51,7 @@ class Gettable
         ARK::Utilities::Network::Connector& netManager,
         const Address& arkAddress);
 
-/*************************************************
-		*
-		*	{
-		*		"success":true,
-		*		"fee":2500000000
-		*	}
-		*
-		**************************************************/
-    Balance delegatesFeefromJSON(const char* const _jsonStr);
-    Balance delegatesFeefromJSON(const String& _jsonStr) {
-        return delegatesFeefromJSON(_jsonStr.c_str());
-    }
+
 
 
 /*************************************************
@@ -96,31 +62,7 @@ class Gettable
         ARK::Utilities::Network::Connector& netManager,
         const Address& arkAddress);
 
-/*************************************************
-		*
-		*	{
-		*		"success":true,
-		*		"delegates":
-		*		[
-		*			{
-		*				"username": "sleepdeficit",
-		*				"address":  "Address",
-		*				"publicKey":  "Publickey",
-		*				"vote": "Balance",
-		*				"producedblocks": const char*,
-		*				"missedblocks": String,
-		*				"rate": int,
-		*				"approval": double,
-		*				"productivity": double
-		*			}
-		*		]
-		*	}
-		*
-		**************************************************/
-    ARK::Delegate delegatesfromJSON(const char* const _jsonStr);
-    ARK::Delegate delegatesfromJSON(const String& _jsonStr) {
-        return delegatesfromJSON(_jsonStr.c_str());
-    }
+
 
 
 /*************************************************
@@ -131,29 +73,7 @@ class Gettable
         ARK::Utilities::Network::Connector& netManager,
         const Address& arkAddress);
 
-/*************************************************
-		*
-		*	{
-		*		"success":true,
-		*		"account":
-		*		{
-		*			"address":  "Address",
-		*			"unconfirmedBalance": "Balance",
-		*			"balance":  "Balance",
-		*			"publicKey":  "Publickey",
-		*			"unconfirmedSignature": int,
-		*			"secondSignature":  int,
-		*			"secondPublicKey":  "Publickey",
-		*			"multisignatures":[],
-		*			"u_multisignatures":[]
-		*		}
-		*	}
-		*
-		**************************************************/
-    ARK::Account accountfromJSON(const char* const _jsonStr);
-    ARK::Account accountfromJSON(const String& _jsonStr) {
-        return accountfromJSON(_jsonStr.c_str());
-    }
+
 /*  ==========================================================================  */
 };
 /*  ======================================  */

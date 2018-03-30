@@ -26,33 +26,7 @@ class Gettable
 		**************************************************/
     ARK::Transaction transaction(ARK::Utilities::Network::Connector& netConnector, const Hash& id);
 
-	/*************************************************
-		*
-		*	{
-		*		"success":true,
-		*		"transaction":
-		*		{
-		*			"id":"_txID",
-		*			"blockid":"_blockID",
-		*			"height":_height,
-		*			"type":_type,
-		*			"timestamp":_timestamp,
-		*			"amount":_amount,
-		*			"fee":_fee,
-		*			"vendorField":"_vendorField",
-		*			"senderId":"_senderID",
-		*			"recipientId":"_recipientID",
-		*			"senderPublicKey":"_senderPubkey",
-		*			"signature":"_txSig",
-		*			"confirmations":_confirmations
-		*		}
-		*	}
-		*
-		**************************************************/
-    ARK::Transaction transactionfromJSON(const char* const jsonStr);
-    ARK::Transaction transactionfromJSON(const String& _jsonStr) {
-        return transactionfromJSON(_jsonStr.c_str());
-    }
+	
 /*  ==========================================================================  */
 
 /*  ==========================================================================  */
@@ -72,38 +46,7 @@ class Gettable
         const Hash& id);
         
 
-	/*************************************************
-		*
-		*	{ 
-		*		"success":true,
-		*		"transaction":
-		*		{
-		*			"id":"_txID",
-		*			"blockid":"_blockID",
-		*			"height":_height,
-		*			"type":_type,
-		*			"timestamp":_timestamp,
-		*			"amount":_amount,
-		*			"fee":_fee,
-		*			"vendorField":_vendorField,
-		*			"senderId":"_senderId",
-		*			"recipientId":"_recipientId",
-		*			"senderPublicKey":_senderPubkey,
-		*			"signature":"_txSig",
-		*			"confirmations":_confirmations
-		*		}
-		*	}
-		*		| or |
-		*	{
-		*		"success":false,
-		*		"error":"Transaction not found"
-		*	}
-		*
-		**************************************************/
-    ARK::API::Transaction::Respondable::Unconfirmed transactionUnconfirmedfromJSON(const char* const jsonStr);
-    ARK::API::Transaction::Respondable::Unconfirmed transactionUnconfirmedfromJSON(const String& _jsonStr) {
-        return transactionUnconfirmedfromJSON(_jsonStr.c_str());
-    }
+	
 
 /*************************************************
 		* ARK::API::Transaction::Gettable::transactionsUnconfirmed
@@ -111,18 +54,7 @@ class Gettable
 		**************************************************/
     ARK::API::Transaction::Respondable::Unconfirmed transactionsUnconfirmed(ARK::Utilities::Network::Connector& netConnector);
 
-	/*************************************************
-		*
-		*	{
-		*		"success":true,
-		*		"transactions":[]
-		*	}
-		*
-		**************************************************/
-    ARK::API::Transaction::Respondable::Unconfirmed transactionsUnconfirmedfromJSON(const char* const jsonStr);
-    ARK::API::Transaction::Respondable::Unconfirmed transactionsUnconfirmedfromJSON(const String& _jsonStr) {
-        return transactionsUnconfirmedfromJSON(_jsonStr.c_str());
-    }
+	
 /*  ==========================================================================  */
 
 };

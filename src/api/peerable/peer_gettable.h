@@ -29,28 +29,7 @@ class Gettable
         int _port
     );
 
-/*************************************************
-    *
-    *	{ 
-    *		"success":true,
-    *		"peer":
-    *		{
-    *			"ip": "String",
-    *			"port": int,
-    *			"version":  "String",
-    *			"errors": int,
-    *			"os": "String",
-    *			"height": String,
-    *			"status": "String",
-    *			"delay":  int
-    *		}
-    *	}
-    *
-    **************************************************/
-    ARK::Peer peerfromJSON(const char* const _jsonStr);
-    ARK::Peer peerfromJSON(const String& _jsonStr) {
-        return peerfromJSON(_jsonStr.c_str());
-    }
+
 /*  ==========================================================================  */
 
 /*  ==========================================================================  */
@@ -67,19 +46,7 @@ class Gettable
     **************************************************/
     ARK::API::Peer::Respondable::Version version(ARK::Utilities::Network::Connector& _netConnector);
 
-/*************************************************
-    *
-    *	{
-    *		"success":true,
-    *		"version":  "String",
-    *		"build":  "String"
-    *	}
-    *
-    **************************************************/
-    ARK::API::Peer::Respondable::Version versionfromJSON(const char* const _jsonStr);
-    ARK::API::Peer::Respondable::Version versionfromJSON(const String& _jsonStr) {
-        return versionfromJSON(_jsonStr.c_str());
-    }
+
 /*  ==========================================================================  */
 };
 /*  ===================================  */

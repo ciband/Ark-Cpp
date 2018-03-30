@@ -24,18 +24,7 @@ class Gettable
     **************************************************/
     String pending(ARK::Utilities::Network::Connector& _netConnector, const Publickey& _publicKey);
 
- /*************************************************
-    *
-    *	{
-    *		"success":true,
-    *		"transactions":[]
-    *	}
-    *
-    **************************************************/
-    String pendingfromJSON(const char* const _jsonStr);
-    String pendingfromJSON(const String& _jsonStr) {
-        return pendingfromJSON(_jsonStr.c_str());
-    }
+ 
 /*  ==========================================================================  */
 
     /*************************************************/
