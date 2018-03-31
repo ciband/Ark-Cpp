@@ -3,7 +3,17 @@
 #ifndef JSON_H
 #define JSON_H
 
-#include "platform.h"
+#include "utilities/platform.h"
+
+#include "api/accountable/accountable.h"
+#include "api/blockable/blockable.h"
+#include "api/delegatable/delegatable.h"
+#include "api/loadable/loadable.h"
+#include "api/peerable/peerable.h"
+#include "api/transactionable/transactionable.h"
+#include "models/block.h"
+#include "models/fees.h"
+
 
 #include <memory>
 
@@ -63,6 +73,27 @@ public:
 	virtual Balance delegatesFeefromJSON(const char* const _jsonStr) = 0;
 	Balance delegatesFeefromJSON(const String& _jsonStr) {
 		return delegatesFeefromJSON(_jsonStr.c_str());
+	}
+
+	/*
+	{ "success":true,
+	  "delegates":[{
+		"username": "sleepdeficit",
+		"address":  "Address",
+		"publicKey":  "Publickey",
+		"vote": "Balance",
+		"producedblocks": String,
+		"missedblocks": String,
+		"rate": int,
+		"approval": double,
+		"productivity": double
+	  }]
+	}
+	*/
+
+	virtual ARK::Delegate ARK::API::Account::Gettable::delegatesfromJSON(const char* const _jsonStr) = 0;
+	ARK::Delegate ARK::API::Account::Gettable::delegatesfromJSON(const String& _jsonStr) {
+		return delegatesfromJSON(_jsonStr.c_str());
 	}
 
 
@@ -165,9 +196,9 @@ public:
 		return nethashfromJSON(_jsonStr.c_str());
 	}
 
-	virtual Balance feefromJSON(const char* const _jsonStr) = 0;
-	Balance feefromJSON(const String& _jsonStr) {
-		return feefromJSON(_jsonStr.c_str());
+	virtual Balance blockFeefromJSON(const char* const _jsonStr) = 0;
+	Balance blockFeefromJSON(const String& _jsonStr) {
+		return blockFeefromJSON(_jsonStr.c_str());
 	}
 
 	/*************************************************
@@ -465,8 +496,8 @@ public:
 		return peerfromJSON(_jsonStr.c_str());
 	}
 
-	virtual ARK::API::PeerGettablePeersResponse peersfromJSON(const char* const _jsonStr) = 0;
-	ARK::API::PeerGettablePeersResponse peersfromJSON(String _jsonStr) {
+	virtual std::unique_ptr<ARK::Peer[]> peersfromJSON(const char* const _jsonStr) = 0;
+	std::unique_ptr<ARK::Peer[]> peersfromJSON(const String& _jsonStr) {
 		return peersfromJSON(_jsonStr.c_str());
 	}
 
@@ -492,9 +523,9 @@ public:
 	*	}
 	*
 	**************************************************/
-	virtual Balance feefromJSON(const char* const _jsonStr) = 0;
-	Balance feefromJSON(const String& _jsonStr) {
-		return feefromJSON(_jsonStr.c_str());
+	virtual Balance signatureFeefromJSON(const char* const _jsonStr) = 0;
+	Balance signatureFeefromJSON(const String& _jsonStr) {
+		return signatureFeefromJSON(_jsonStr.c_str());
 	}
 
 	/*************************************************
@@ -571,15 +602,15 @@ public:
 		return transactionsUnconfirmedfromJSON(_jsonStr.c_str());
 	}
 
-	virtual std::unique_ptr<ARK::Transaction[]> ARK::API::Transaction::Gettable::transactionsfromJSON(const char* const jsonStr) = 0;
-	std::unique_ptr<ARK::Transaction[]> ARK::API::Transaction::Gettable::transactionsfromJSON(const String& jsonStr) {
+	virtual std::unique_ptr<ARK::Transaction[]> transactionsfromJSON(const char* const jsonStr) = 0;
+	std::unique_ptr<ARK::Transaction[]> transactionsfromJSON(const String& jsonStr) {
 		return transactionsfromJSON(jsonStr.c_str());
 	}
 };
 /*  ==========================================================================  */
 
-// JSON object factory
-std::unique_ptr<JSONInterface> make_json_string(const String& str);
+// JSON parser singleton
+JSONInterface& get_json_interface();
 
 }
 }

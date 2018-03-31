@@ -10,7 +10,7 @@ ARK::API::Loader::Respondable::Status ARK::API::Loader::Gettable::status(ARK::Ut
 {
   auto callback = _netConnector.cb(ARK::API::Paths::Loader::status_s);
 
-  return ARK::API::Loader::Gettable::statusfromJSON(callback);
+  return ARK::Utilities::get_json_interface().statusfromJSON(callback);
 }
 
 /*
@@ -45,7 +45,7 @@ ARK::API::Loader::Respondable::Sync ARK::API::Loader::Gettable::sync(ARK::Utilit
 {
   auto callback = _netConnector.cb(ARK::API::Paths::Loader::sync_s);
 
-  return ARK::API::Loader::Gettable::syncfromJSON(callback);
+  return ARK::Utilities::get_json_interface().syncfromJSON(callback);
 }
 
 /*
@@ -82,7 +82,7 @@ ARK::Network ARK::API::Loader::Gettable::autoconfigure(ARK::Utilities::Network::
 {
   auto callback = _netConnector.cb(ARK::API::Paths::Loader::autoconfigure_s);
 
-  return ARK::API::Loader::Gettable::autoconfigurefromJSON(callback);
+  return ARK::Utilities::get_json_interface().autoconfigurefromJSON(callback);
 }
 
 /*

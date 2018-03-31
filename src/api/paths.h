@@ -12,11 +12,14 @@ namespace Paths {
 **************************************************/
 namespace Account
 {
+
 const auto getBalance_s = "/api/accounts/getBalance";
 const auto getPublickey_s = "/api/accounts/getPublickey";
 const auto delegatesFee_s = "/api/accounts/delegates/fee";
 const auto delegates_s = "/api/accounts/delegates";
 const auto accounts_s = "/api/accounts";
+const auto accounts_top_s = "/api/accounts/top";
+
 };
 /*************************************************/
 

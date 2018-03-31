@@ -24,7 +24,7 @@ ARK::Peer ARK::API::Peer::Gettable::peer(
 
     auto callback = _netConnector.cb(uri);
 
-    return ARK::API::Peer::Gettable::peerfromJSON(callback);
+    return ARK::Utilities::get_json_interface().peerfromJSON(callback);
 }
 
 /*
@@ -140,7 +140,7 @@ ARK::API::Peer::Respondable::Version ARK::API::Peer::Gettable::version(
 {
     auto callback = _netConnector.cb(ARK::API::Paths::Peer::version_s);
 
-    return ARK::API::Peer::Gettable::versionfromJSON(callback);
+    return ARK::Utilities::get_json_interface().versionfromJSON(callback);
 };
 
 /*

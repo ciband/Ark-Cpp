@@ -18,8 +18,8 @@ ARK::Block ARK::API::Block::Gettable::block(
     strcat(uri, blockId);
 
     auto callback = netConnector.cb(uri);
-    return ARK::API::Block::Gettable::blockfromJSON(callback);
-};
+    return ARK::Utilities::get_json_interface().blockfromJSON(callback);
+}
 
 /*
 { "success":true,
@@ -83,7 +83,7 @@ ARK::Block ARK::API::Block::Gettable::blockfromJSON(const char* const jsonStr)
  std::unique_ptr<ARK::Block[]> ARK::API::Block::Gettable::blocks(ARK::Utilities::Network::Connector _netConnector) {
    auto callback = _netConnector.cb(ARK::API::Paths::Block::blocks_s);
    //if (callback.indexOf("false") >= 0) { return callback; };
-   return ARK::API::Block::Gettable::blocksfromJSON(callback);
+   return ARK::Utilities::get_json_interface().blocksfromJSON(callback);
  }
 
  /*
@@ -173,8 +173,8 @@ String ARK::API::Block::Gettable::epoch(ARK::Utilities::Network::Connector& _net
 {
   auto callback = _netConnector.cb(ARK::API::Paths::Block::getEpoch_s);
 
-  return ARK::API::Block::Gettable::epochfromJSON(callback);
-};
+  return ARK::Utilities::get_json_interface().epochfromJSON(callback);
+}
 
 /*
 {
@@ -202,8 +202,8 @@ ARK::API::Block::Respondable::Height ARK::API::Block::Gettable::height(ARK::Util
 {
   auto callback = _netConnector.cb(ARK::API::Paths::Block::getHeight_s);
 
-  return ARK::API::Block::Gettable::heightfromJSON(callback);
-};
+  return ARK::Utilities::get_json_interface().heightfromJSON(callback);
+}
 
 /*
 {
@@ -232,8 +232,8 @@ Hash ARK::API::Block::Gettable::nethash(ARK::Utilities::Network::Connector& _net
 {
   auto callback = _netConnector.cb(ARK::API::Paths::Block::getNethash_s);
 
-  return ARK::API::Block::Gettable::nethashfromJSON(callback);
-};
+  return ARK::Utilities::get_json_interface().nethashfromJSON(callback);
+}
 
 /*
 {
@@ -261,8 +261,8 @@ Balance ARK::API::Block::Gettable::fee(ARK::Utilities::Network::Connector& _netC
 {
   auto callback = _netConnector.cb(ARK::API::Paths::Block::getFee_s);
 
-  return ARK::API::Block::Gettable::feefromJSON(callback);
-};
+  return ARK::Utilities::get_json_interface().feefromJSON(callback);
+}
 
 /*
 { "success":true,

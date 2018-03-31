@@ -10,7 +10,7 @@ Balance ARK::API::Signature::Gettable::fee(ARK::Utilities::Network::Connector& _
 {
     auto callback = _netConnector.cb(ARK::API::Paths::Signatures::fee_s);
 
-    return ARK::API::Signature::Gettable::feefromJSON(callback);
+    return ARK::Utilities::get_json_interface().signatureFeefromJSON(callback);
 }
 
 /*

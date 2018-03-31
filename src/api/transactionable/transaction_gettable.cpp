@@ -23,7 +23,7 @@ ARK::Transaction ARK::API::Transaction::Gettable::transaction(
     strcat(uri, id.getValue());
 
     auto callback = netConnector.cb(uri);
-    return ARK::API::Transaction::Gettable::transactionfromJSON(callback);
+    return ARK::Utilities::get_json_interface().transactionfromJSON(callback);
 }
 
 /*
@@ -196,7 +196,7 @@ ARK::API::Transaction::Respondable::Unconfirmed ARK::API::Transaction::Gettable:
     strcat(uri, id.getValue());
 
     auto callback = netConnector.cb(uri);
-    return ARK::API::Transaction::Gettable::transactionUnconfirmedfromJSON(callback);
+    return ARK::Utilities::get_json_interface().transactionUnconfirmedfromJSON(callback);
 }
 
 /*
@@ -266,7 +266,7 @@ ARK::API::Transaction::Respondable::Unconfirmed ARK::API::Transaction::Gettable:
 ) {
     auto callback = netConnector.cb(ARK::API::Paths::Transaction::unconfirmed_s);
 
-    return ARK::API::Transaction::Gettable::transactionsUnconfirmedfromJSON(callback);
+    return ARK::Utilities::get_json_interface().transactionsUnconfirmedfromJSON(callback);
 }
 
 /*

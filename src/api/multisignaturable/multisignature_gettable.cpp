@@ -21,8 +21,8 @@ String ARK::API::MultiSignature::Gettable::pending(
 
     auto callback = _netConnector.cb(uri);
 
-    return ARK::API::MultiSignature::Gettable::pendingfromJSON(callback);
-};
+    return ARK::Utilities::get_json_interface().pendingfromJSON(callback);
+}
 
 /*
 {

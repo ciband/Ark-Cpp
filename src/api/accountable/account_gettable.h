@@ -40,7 +40,7 @@ class Gettable
         ARK::Utilities::Network::Connector& netManager,
         const Address& arkAddress);
 
-/
+
 
 
 /*************************************************

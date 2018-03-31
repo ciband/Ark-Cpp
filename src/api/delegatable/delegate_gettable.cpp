@@ -11,8 +11,8 @@ int ARK::API::Delegate::Gettable::count(ARK::Utilities::Network::Connector& _net
 {
   auto callback = _netConnector.cb(ARK::API::Paths::Delegate::count_s);
 
-  return ARK::API::Delegate::Gettable::countfromJSON(callback);
-};
+  return ARK::Utilities::get_json_interface().countfromJSON(callback);
+}
 
 /*
 { 
@@ -47,8 +47,8 @@ ARK::API::Delegate::Respondable::Search ARK::API::Delegate::Gettable::search(
 
     auto callback = _netConnector.cb(uri);
 
-  return ARK::API::Delegate::Gettable::searchfromJSON(callback);
-};
+  return ARK::Utilities::get_json_interface().searchfromJSON(callback);
+}
 
 /*
 { 
@@ -99,8 +99,8 @@ ARK::API::Delegate::Respondable::Voters ARK::API::Delegate::Gettable::voters(
 
     auto callback = _netConnector.cb(uri);
 
-  return ARK::API::Delegate::Gettable::votersfromJSON(callback);
-};
+  return ARK::Utilities::get_json_interface().votersfromJSON(callback);
+}
 
 /*
 { "success":true,
@@ -137,7 +137,7 @@ ARK::API::Delegate::Respondable::Voters ARK::API::Delegate::Gettable::votersfrom
     };
 
     return voters;
-};
+}
 /*  ====================================  */
 /*  ==========================================================================  */
 
@@ -171,8 +171,8 @@ ARK::Delegate ARK::API::Delegate::Gettable::delegate(
 
   auto callback = _netConnector.cb(uri);
 
-  return ARK::API::Delegate::Gettable::delegatefromJSON(callback);
-};
+  return ARK::Utilities::get_json_interface().delegatefromJSON(callback);
+}
 
 /*
 { 
@@ -298,7 +298,7 @@ Balance ARK::API::Delegate::Gettable::fee(ARK::Utilities::Network::Connector& _n
 {
   auto callback = _netConnector.cb(ARK::API::Paths::Delegate::fee_s);
 
-  return ARK::API::Delegate::Gettable::feefromJSON(callback);
+  return ARK::Utilities::get_json_interface().delegateFeefromJSON(callback);
 };
 
 /*
@@ -334,8 +334,8 @@ ARK::API::Delegate::Respondable::ForgedByAccount ARK::API::Delegate::Gettable::f
 
     auto callback = _netConnector.cb(uri);
 
-    return ARK::API::Delegate::Gettable::forgedByAccountfromJSON(callback);
-};
+    return ARK::Utilities::get_json_interface().forgedByAccountfromJSON(callback);
+}
 
 /*
 {
@@ -370,8 +370,8 @@ ARK::API::Delegate::Respondable::NextForgers ARK::API::Delegate::Gettable::nextF
 {
   auto callback = _netConnector.cb(ARK::API::Paths::Delegate::getNextForgers_s);
 
-  return ARK::API::Delegate::Gettable::nextForgersfromJSON(callback);
-};
+  return ARK::Utilities::get_json_interface().nextForgersfromJSON(callback);
+}
 
 /*
 { "success":true,

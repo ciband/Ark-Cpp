@@ -12,30 +12,14 @@ namespace Account {
 namespace Respondable {
 
 /*************************************************
-*	  ARK::API::Account::Respondable::balances_t
-*
-*   @param: Balance confirmed, Balance confirmed
-*
-*   @brief: Model for Balances API Response
-**************************************************/
-struct balances_t
-{
-protected:
-	Balance confirmed_;
-	Balance unconfirmed_;
-
-	balances_t(const Balance& c, const Balance& u) : confirmed_(c), unconfirmed_(u) { }
-};
-/*************************************************/
-
-/**************************************************************************************************/
-
-/*************************************************
 *		ARK::API::Account::Respondable::Balances
 *
 *   @brief: Constructed API Balances Response Object
 **************************************************/
-class Balances : public Printable, virtual balances_t {
+class Balances : public Printable {
+private:
+	Balance confirmed_;
+	Balance unconfirmed_;
 
 public:
 /*************************************************
@@ -50,7 +34,7 @@ public:
     *
     *   @brief: Constructed API Balances Response Object
     **************************************************/
-	Balances(const Balance& c, const Balance& u) : balances_t(c, u) { }
+	Balances(const Balance& c, const Balance& u) : confirmed_(c), unconfirmed_(u) { }
 	
 	const Balance& confirmed() const noexcept { return confirmed_; }
 	const Balance& unconfirmed() const noexcept { return unconfirmed_; }
