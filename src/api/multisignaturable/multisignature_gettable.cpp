@@ -21,26 +21,8 @@ String ARK::API::MultiSignature::Gettable::pending(
 
     auto callback = _netConnector.cb(uri);
 
-    return ARK::Utilities::get_json_interface().pendingfromJSON(callback);
+    return ARK::Utilities::get_json_interface().multisignatures_pending_fromJSON(callback.c_str());
 }
-
-/*
-{
-  "success":true,
-  "transactions":[]
-}
-*/
-String ARK::API::MultiSignature::Gettable::pendingfromJSON(const char* const _jsonStr)
-{
-  auto jString = ARK::Utilities::make_json_string(_jsonStr);
-  
-  return jString->valueFor("transactions");
-};
-/*  =========================================  */
-/*  ==========================================================================  */
-
-
-
 
 /*  ==========================================================================  */
 /*  ==========================================================================  */
@@ -52,7 +34,7 @@ String ARK::API::MultiSignature::Gettable::pendingfromJSON(const char* const _js
   //     uri += "?publicKey=";
   //     uri += _publicKey;
   //   String callback = _netConnector.cb(uri);
-  //   return ARK::API::MultiSignature::Gettable::accountsfromJSON(callback);
+  //   return ARK::API::MultiSignature::Gettable::accountsfromJSON(callback.c_str());
   // };
 
   /*  Only on Mainnet?  */

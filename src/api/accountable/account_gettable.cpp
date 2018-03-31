@@ -18,7 +18,7 @@ ARK::API::Account::Respondable::Balances ARK::API::Account::Gettable::balance(
   
     auto callback = netManager.cb(uri);
 
-    return ARK::Utilities::get_json_interface().balancefromJSON(callback);
+    return ARK::Utilities::get_json_interface().accounts_getBalance_fromJSON(callback.c_str());
 };
 
 /*  ==========================================================================  */
@@ -36,7 +36,7 @@ Publickey ARK::API::Account::Gettable::publickey(
     strcat(uri, arkAddress.getValue());
 
     auto callback = netManager.cb(uri);
-    return ARK::Utilities::get_json_interface().publickeyfromJSON(callback);
+    return ARK::Utilities::get_json_interface().accounts_getPublickey_fromJSON(callback.c_str());
 };
 
 
@@ -58,7 +58,7 @@ Balance ARK::API::Account::Gettable::delegatesFee(
 
     auto callback = netManager.cb(uri);
 
-    return ARK::Utilities::get_json_interface().delegatesFeefromJSON(callback);
+    return ARK::Utilities::get_json_interface().accounts_delegates_fee_fromJSON(callback.c_str());
 };
 
 
@@ -69,7 +69,7 @@ Balance ARK::API::Account::Gettable::delegatesFee(
 /*  ======================================  */
 /*  ARK::API::Account::Gettable::delegates  */
 /*  /api/accounts/delegates?address=arkAddress  */
-ARK::Delegate ARK::API::Account::Gettable::delegates(
+std::unique_ptr<ARK::Delegate[]> ARK::API::Account::Gettable::delegates(
     ARK::Utilities::Network::Connector& netManager,
     const Address& arkAddress)
 {
@@ -81,7 +81,7 @@ ARK::Delegate ARK::API::Account::Gettable::delegates(
 
     auto callback = netManager.cb(uri);
 
-    return ARK::Utilities::get_json_interface().delegatesfromJSON(callback);
+    return ARK::Utilities::get_json_interface().accounts_delegates_fromJSON(callback.c_str());
 }
 
 
@@ -89,7 +89,7 @@ ARK::Delegate ARK::API::Account::Gettable::delegates(
 /*  ====================================  */
 /*  ARK::API::Account::Gettable::account  */
 /*  /api/accounts?address=arkAddress  */
-ARK::Account ARK::API::Account::Gettable::account(
+std::unique_ptr<ARK::Account[]> ARK::API::Account::Gettable::account(
     ARK::Utilities::Network::Connector& netManager,
     const Address& arkAddress)
 {
@@ -101,39 +101,5 @@ ARK::Account ARK::API::Account::Gettable::account(
 
     auto callback = netManager.cb(uri);
 
-    return ARK::Utilities::get_json_interface().accountfromJSON(callback);
-};
-
-/*
-{ "success":true,
-  "account":{
-    "address":  "Address",
-    "unconfirmedBalance": "Balance",
-    "balance":  "Balance",
-    "publicKey":  "Publickey",
-    "unconfirmedSignature": int,
-    "secondSignature":  int,
-    "secondPublicKey":  "Publickey",
-    "multisignatures":[],
-    "u_multisignatures":[]
-  }
+    return ARK::Utilities::get_json_interface().accounts_fromJSON(callback.c_str());
 }
-*/
-ARK::Account ARK::API::Account::Gettable::accountfromJSON(const char* const _jsonStr)
-{
-    auto jString = ARK::Utilities::make_json_string(_jsonStr);
-
-    return ARK::Account(
-        jString->subvalueIn("account", "address").c_str(),
-        jString->subvalueIn("account", "unconfirmedBalance").c_str(),
-        jString->subvalueIn("account", "balance").c_str(),
-        jString->subvalueIn("account", "publicKey").c_str(),
-        convert_to_int(jString->subvalueIn("account", "unconfirmedSignature")),
-        convert_to_int(jString->subvalueIn("account", "secondSignature")),
-        jString->subvalueIn("account", "secondPublicKey").c_str(),
-        jString->subvalueIn("account", "multisignatures").c_str(),
-        jString->subvalueIn("account", "u_multisignatures").c_str()
-    );
-}
-/*  ====================================  */
-/*  ==========================================================================  */

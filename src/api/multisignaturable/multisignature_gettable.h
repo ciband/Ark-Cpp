@@ -54,7 +54,7 @@ class Gettable
   //     uri += "?publicKey=";
   //     uri += _publicKey;
   //   String callback = _netConnector.cb(uri);
-  //   return ARK::API::MultiSignature::Gettable::accountsfromJSON(callback);
+  //   return ARK::API::MultiSignature::Gettable::accountsfromJSON(callback.c_str());
   // };
 
   /*  Only on Mainnet?  */

@@ -58,7 +58,7 @@ class Gettable
 		*	ARK::API::Account::Gettable::delegates
 		*		/api/accounts/delegates?address=arkAddress
 		**************************************************/
-    ARK::Delegate delegates(
+	std::unique_ptr<ARK::Delegate[]> delegates(
         ARK::Utilities::Network::Connector& netManager,
         const Address& arkAddress);
 
@@ -69,7 +69,7 @@ class Gettable
 		*	ARK::API::Account::Gettable::account
 		*		/api/accounts?address=arkAddress 
 		**************************************************/
-    ARK::Account account(
+	std::unique_ptr<ARK::Account[]> account(
         ARK::Utilities::Network::Connector& netManager,
         const Address& arkAddress);
 

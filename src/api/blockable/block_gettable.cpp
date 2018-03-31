@@ -18,59 +18,8 @@ ARK::Block ARK::API::Block::Gettable::block(
     strcat(uri, blockId);
 
     auto callback = netConnector.cb(uri);
-    return ARK::Utilities::get_json_interface().blockfromJSON(callback);
+    return ARK::Utilities::get_json_interface().blocks_get_fromJSON(callback.c_str());
 }
-
-/*
-{ "success":true,
-  "block":{
-    "id": "String",
-    "version":  int,
-    "timestamp":  String,
-    "height": String,
-    "previousBlock":  "Striing",
-    "numberOfTransactions": String,
-    "totalAmount":  Balance,
-    "totalFee": Balance,
-    "reward": Balance,
-    "payloadLength":  String,
-    "payloadHash":  "Hash",
-    "generatorPublicKey": "Publickey",
-    "generatorId":  "Address",
-    "blockSignature": "Signature",
-    "confirmations":  String,
-    "totalForged":" Balance"
-  }
-}
-*/
-
-ARK::Block ARK::API::Block::Gettable::blockfromJSON(const char* const jsonStr)
-{
-	auto jString = ARK::Utilities::make_json_string(jsonStr);
-
-	return ARK::Block(
-		jString->valueIn("block", "id").c_str(),
-		convert_to_int(jString->valueIn("block", "version")),
-		jString->valueIn("block", "timestamp").c_str(),
-		jString->valueIn("block", "height").c_str(),
-		jString->valueIn("block", "previousBlock").c_str(),
-		jString->valueIn("block", "numberOfTransactions").c_str(),
-		jString->valueIn("block", "totalAmount").c_str(),
-		jString->valueIn("block", "totalFee").c_str(),
-		jString->valueIn("block", "reward").c_str(),
-		jString->valueIn("block", "payloadLength").c_str(),
-		jString->valueIn("block", "payloadHash").c_str(),
-		jString->valueIn("block", "generatorPublicKey").c_str(),
-		jString->valueIn("block", "generatorId").c_str(),
-		jString->valueIn("block", "blockSignature").c_str(),
-		jString->valueIn("block", "confirmations").c_str(),
-		jString->valueIn("block", "totalForged").c_str()
-	);
-}
-/*  ==============================  */
-/*  ==========================================================================  */
-
-
 
 
 /*  ==========================================================================  */
@@ -82,87 +31,8 @@ ARK::Block ARK::API::Block::Gettable::blockfromJSON(const char* const jsonStr)
 // /*  /api/blocks */
  std::unique_ptr<ARK::Block[]> ARK::API::Block::Gettable::blocks(ARK::Utilities::Network::Connector _netConnector) {
    auto callback = _netConnector.cb(ARK::API::Paths::Block::blocks_s);
-   //if (callback.indexOf("false") >= 0) { return callback; };
-   return ARK::Utilities::get_json_interface().blocksfromJSON(callback);
+   return ARK::Utilities::get_json_interface().blocks_fromJSON(callback.c_str());
  }
-
- /*
- {
-   "success":true,
-   "blocks":[
-     {
-       "id":"_blockID",
-       "version":_version,
-       "timestamp":_timestamp,
-       "height":_height,
-       "previousBlock":"_previousBlock",
-       "numberOfTransactions":_numberOfTransactions,
-       "totalAmount":_totalAmount,
-       "totalFee":_totalFee,
-       "reward":_reward,
-       "payloadLength":_payloadLength,
-       "payloadHash":"_payloadHash",
-       "generatorPublicKey":"_generatorPubkey",
-       "generatorId":"_generatorId",
-       "blockSignature":"_blockSig",
-       "confirmations":_confirmations,
-       "totalForged":"_totalForged"
-     },
-     ...
-     {
-       "id":"_blockID",
-       "version":_version,
-       "timestamp":_timestamp,
-       "height":_height,
-       "previousBlock":"_previousBlock",
-       "numberOfTransactions":_numberOfTransactions,
-       "totalAmount":_totalAmount,
-       "totalFee":_totalFee,
-       "reward":_reward,
-       "payloadLength":_payloadLength,
-       "payloadHash":"_payloadHash",
-       "generatorPublicKey":"_generatorPubkey",
-       "generatorId":"_generatorId",
-       "blockSignature":"_blockSig",
-       "confirmations":_confirmations,
-       "totalForged":"_totalForged"
-     }
-   ],
-   "count":2313747
- }
- */
- std::unique_ptr<ARK::Block[]> ARK::API::Block::Gettable::blocksfromJSON(const char* const jsonStr) {
-	auto jString = ARK::Utilities::make_json_string(jsonStr);
-	int count;
-	std::unique_ptr<ARK::Block[]> blocks(new ARK::Block[count]);
-	for (auto i = 0; i < count; ++i) {
-		jString->subarrayValueIn("blocks", i, "block");
-		blocks[i] = ARK::Block(
-			jString->valueIn("block", "id").c_str(),
-			convert_to_int(jString->valueIn("block", "version")),
-			jString->valueIn("block", "timestamp").c_str(),
-			jString->valueIn("block", "height").c_str(),
-			jString->valueIn("block", "previousBlock").c_str(),
-			jString->valueIn("block", "numberOfTransactions").c_str(),
-			jString->valueIn("block", "totalAmount").c_str(),
-			jString->valueIn("block", "totalFee").c_str(),
-			jString->valueIn("block", "reward").c_str(),
-			jString->valueIn("block", "payloadLength").c_str(),
-			jString->valueIn("block", "payloadHash").c_str(),
-			jString->valueIn("block", "generatorPublicKey").c_str(),
-			jString->valueIn("block", "generatorId").c_str(),
-			jString->valueIn("block", "blockSignature").c_str(),
-			jString->valueIn("block", "confirmations").c_str(),
-			jString->valueIn("block", "totalForged").c_str()
-		);
-	}
-	return blocks;
-}
-/*  ===============================  */
-/*  ==========================================================================  */
-/*  ==========================================================================  */
-
-
 
 
 /*  ==========================================================================  */
@@ -173,26 +43,8 @@ String ARK::API::Block::Gettable::epoch(ARK::Utilities::Network::Connector& _net
 {
   auto callback = _netConnector.cb(ARK::API::Paths::Block::getEpoch_s);
 
-  return ARK::Utilities::get_json_interface().epochfromJSON(callback);
+  return ARK::Utilities::get_json_interface().blocks_getEpoch_fromJSON(callback.c_str());
 }
-
-/*
-{
-  "success":true,
-  "epoch":  "String"
-}
-*/
-String ARK::API::Block::Gettable::epochfromJSON(const char* const _jsonStr)
-{
-  auto jString = ARK::Utilities::make_json_string(_jsonStr);
-
-  return jString->valueFor("epoch");
-};
-/*  ==============================  */
-/*  ==========================================================================  */
-
-
-
 
 /*  ==========================================================================  */
 /*  ===============================  */
@@ -202,27 +54,8 @@ ARK::API::Block::Respondable::Height ARK::API::Block::Gettable::height(ARK::Util
 {
   auto callback = _netConnector.cb(ARK::API::Paths::Block::getHeight_s);
 
-  return ARK::Utilities::get_json_interface().heightfromJSON(callback);
+  return ARK::Utilities::get_json_interface().blocks_getHeight_fromJSON(callback.c_str());
 }
-
-/*
-{
-  "success":true,
-  "height": String,
-  "id": "String"
-}
-*/
-ARK::API::Block::Respondable::Height ARK::API::Block::Gettable::heightfromJSON(const char* const _jsonStr)
-{
-  auto jString = ARK::Utilities::make_json_string(_jsonStr);
-
-  return ARK::API::Block::Respondable::Height(jString->valueFor("height").c_str(), jString->valueFor("id").c_str());
-};
-/*  ===============================  */
-/*  ==========================================================================  */
-
-
-
 
 /*  ==========================================================================  */
 /*  ================================  */
@@ -232,26 +65,8 @@ Hash ARK::API::Block::Gettable::nethash(ARK::Utilities::Network::Connector& _net
 {
   auto callback = _netConnector.cb(ARK::API::Paths::Block::getNethash_s);
 
-  return ARK::Utilities::get_json_interface().nethashfromJSON(callback);
+  return ARK::Utilities::get_json_interface().blocks_getNethash_fromJSON(callback.c_str());
 }
-
-/*
-{
-  "success":true,
-  "nethash":  "Hash"
-}
-*/
-Hash ARK::API::Block::Gettable::nethashfromJSON(const char* const _jsonStr)
-{
-  auto jString = ARK::Utilities::make_json_string(_jsonStr);
-
-  return Hash(jString->valueFor("nethash").c_str());
-};
-/*  ================================  */
-/*  ==========================================================================  */
-
-
-
 
 /*  ==========================================================================  */
 /*  ============================  */
@@ -261,25 +76,8 @@ Balance ARK::API::Block::Gettable::fee(ARK::Utilities::Network::Connector& _netC
 {
   auto callback = _netConnector.cb(ARK::API::Paths::Block::getFee_s);
 
-  return ARK::Utilities::get_json_interface().feefromJSON(callback);
+  return ARK::Utilities::get_json_interface().blocks_getFee_fromJSON(callback.c_str());
 }
-
-/*
-{ "success":true,
-  "fee":  Balance
-}
-*/
-Balance ARK::API::Block::Gettable::feefromJSON(const char* const _jsonStr)
-{
-  auto jString = ARK::Utilities::make_json_string(_jsonStr);
-
-  return Balance(jString->valueFor("fee").c_str());
-};
-/*  ============================  */
-/*  ==========================================================================  */
-
-
-
 
 /*  ==========================================================================  */
 /*  =============================  */
@@ -289,37 +87,8 @@ ARK::Fees ARK::API::Block::Gettable::fees(ARK::Utilities::Network::Connector& _n
 {
   auto callback = _netConnector.cb(ARK::API::Paths::Block::getFees_s);
 
-  return ARK::API::Block::Gettable::feesfromJSON(callback);
-};
-
-/*
-{ "success":true,
-  "fees":{
-    "send": Balance,
-    "vote": Balance,
-    "secondsignature": Balance,
-    "delegate": Balance,
-    "multisignature": Balance
-  }
+  return ARK::Utilities::get_json_interface().blocks_getFees_fromJSON(callback.c_str());
 }
-*/
-ARK::Fees ARK::API::Block::Gettable::feesfromJSON(const char* const _jsonStr)
-{
-    auto jString = ARK::Utilities::make_json_string(_jsonStr);
-
-    return Fees(
-        jString->valueIn("fees", "send").c_str(),
-        jString->valueIn("fees", "vote").c_str(),
-        jString->valueIn("fees", "secondsignature").c_str(),
-        jString->valueIn("fees", "delegate").c_str(),
-        jString->valueIn("fees", "multisignature").c_str()
-    );
-};
-/*  =============================  */
-/*  ==========================================================================  */
-
-
-
 
 /*  ==========================================================================  */
 /*  ==================================  */
@@ -329,26 +98,8 @@ String ARK::API::Block::Gettable::milestone(ARK::Utilities::Network::Connector& 
 {
   auto callback = _netConnector.cb(ARK::API::Paths::Block::getMilestone_s);
 
-  return ARK::API::Block::Gettable::milestonefromJSON(callback);
+  return ARK::Utilities::get_json_interface().blocks_getMilestone_fromJSON(callback.c_str());
 };
-
-/*
-{
-  "success":true,
-  "milestone": String
-}
-*/
-String ARK::API::Block::Gettable::milestonefromJSON(const char* const _jsonStr)
-{
-  auto jString = ARK::Utilities::make_json_string(_jsonStr);
-
-  return jString->valueFor("milestone");
-};
-/*  ==================================  */
-/*  ==========================================================================  */
-
-
-
 
 /*  ==========================================================================  */
 /*  ===============================  */
@@ -358,25 +109,8 @@ Balance ARK::API::Block::Gettable::reward(ARK::Utilities::Network::Connector& _n
 {
   auto callback = _netConnector.cb(ARK::API::Paths::Block::getReward_s);
 
-  return ARK::API::Block::Gettable::rewardfromJSON(callback);
-};
-
-/*
-{ "success":true,
-  "reward": Balance
+  return ARK::Utilities::get_json_interface().blocks_getReward_fromJSON(callback.c_str());
 }
-*/
-Balance ARK::API::Block::Gettable::rewardfromJSON(const char* const _jsonStr)
-{
-  auto jString = ARK::Utilities::make_json_string(_jsonStr);
-
-  return Balance(jString->valueFor("reward").c_str());
-};
-/*  ===============================  */
-/*  ==========================================================================  */
-
-
-
 
 /*  ==========================================================================  */
 /*  ===============================  */
@@ -386,26 +120,8 @@ Balance ARK::API::Block::Gettable::supply(ARK::Utilities::Network::Connector& _n
 {
   auto callback = _netConnector.cb(ARK::API::Paths::Block::getSupply_s);
 
-  return ARK::API::Block::Gettable::supplyfromJSON(callback);
-};
-
-/*
-{
-  "success":true,
-  "supply": Balance
+  return ARK::Utilities::get_json_interface().blocks_getSupply_fromJSON(callback.c_str());
 }
-*/
-Balance ARK::API::Block::Gettable::supplyfromJSON(const char* _jsonStr)
-{
-  auto jString = ARK::Utilities::make_json_string(_jsonStr);
-
-  return Balance(jString->valueFor("supply").c_str());
-};
-/*  ===============================  */
-/*  ==========================================================================  */
-
-
-
 
 /*  ==========================================================================  */
 /*  ===============================  */
@@ -415,33 +131,6 @@ ARK::API::Block::Respondable::Status ARK::API::Block::Gettable::status(ARK::Util
 {
   auto callback = _netConnector.cb(ARK::API::Paths::Block::getStatus_s);
 
-  return ARK::API::Block::Gettable::statusfromJSON(callback);
+  return ARK::Utilities::get_json_interface().blocks_getStatus_fromJSON(callback.c_str());
 };
 
-/*
-{ "success":true,
-  "epoch":  "String",
-  "height": String,
-  "fee":  Balance,
-  "milestone":  String,
-  "nethash":" Hash",
-  "reward":_reward,
-  "supply":_supply
-}
-*/
-ARK::API::Block::Respondable::Status ARK::API::Block::Gettable::statusfromJSON(const char* const _jsonStr)
-{
-    auto jString = ARK::Utilities::make_json_string(_jsonStr);
-  
-    return ARK::API::Block::Respondable::Status(
-        jString->valueFor("epoch").c_str(),
-        jString->valueFor("height").c_str(),
-        jString->valueFor("fee").c_str(),
-        convert_to_int(jString->valueFor("milestone")),
-        jString->valueFor("nethash").c_str(),
-        jString->valueFor("reward").c_str(),
-        jString->valueFor("supply").c_str()
-    );
-};
-/*  ===============================  */
-/*  ==========================================================================  */

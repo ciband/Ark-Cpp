@@ -92,7 +92,7 @@ class Transactionable :
 		*			Gets Unconfirmed Transactions from a Node via API.
 		* 
 		**************************************************/
-		ARK::API::Transaction::Respondable::Unconfirmed transactionsUnconfirmed()
+		std::unique_ptr<ARK::API::Transaction::Respondable::Unconfirmed[]> transactionsUnconfirmed()
 		{
 			return ARK::API::Transaction::Gettable::transactionsUnconfirmed(this->netConnector);
 		};

@@ -10,32 +10,8 @@ ARK::API::Loader::Respondable::Status ARK::API::Loader::Gettable::status(ARK::Ut
 {
   auto callback = _netConnector.cb(ARK::API::Paths::Loader::status_s);
 
-  return ARK::Utilities::get_json_interface().statusfromJSON(callback);
+  return ARK::Utilities::get_json_interface().loader_status_fromJSON(callback.c_str());
 }
-
-/*
-{ 
-  "success":true,
-  "loaded": bool,
-  "now":  int,
-  "blocksCount":  String
-}
-*/
-ARK::API::Loader::Respondable::Status ARK::API::Loader::Gettable::statusfromJSON(const char* const _jsonStr)
-{
-    auto jString = ARK::Utilities::make_json_string(_jsonStr);
-
-    return ARK::API::Loader::Respondable::Status(
-        jString->valueFor("loaded").c_str(),
-        convert_to_int(jString->valueFor("now")),
-        jString->valueFor("blocksCount").c_str()
-    );
-}
-/*  ================================  */
-/*  ==========================================================================  */
-
-
-
 
 /*  ==========================================================================  */
 /*  ==============================  */
@@ -45,34 +21,8 @@ ARK::API::Loader::Respondable::Sync ARK::API::Loader::Gettable::sync(ARK::Utilit
 {
   auto callback = _netConnector.cb(ARK::API::Paths::Loader::sync_s);
 
-  return ARK::Utilities::get_json_interface().syncfromJSON(callback);
+  return ARK::Utilities::get_json_interface().loader_status_sync_fromJSON(callback.c_str());
 }
-
-/*
-{ 
-  "success":true,
-  "syncing":  bool,
-  "blocks": int,
-  "height": String,
-  "id": "String"
-}
-*/
-ARK::API::Loader::Respondable::Sync ARK::API::Loader::Gettable::syncfromJSON(const char* const _jsonStr)
-{
-    auto jString = ARK::Utilities::make_json_string(_jsonStr);
-
-    return ARK::API::Loader::Respondable::Sync(
-        jString->valueFor("syncing").c_str(),
-        convert_to_int(jString->valueFor("blocks")),
-        jString->valueFor("height").c_str(),
-        jString->valueFor("id").c_str()
-    );
-}
-/*  ==============================  */
-/*  ==========================================================================  */
-
-
-
 
 /*  ==========================================================================  */
 /*  =======================================  */
@@ -82,33 +32,6 @@ ARK::Network ARK::API::Loader::Gettable::autoconfigure(ARK::Utilities::Network::
 {
   auto callback = _netConnector.cb(ARK::API::Paths::Loader::autoconfigure_s);
 
-  return ARK::Utilities::get_json_interface().autoconfigurefromJSON(callback);
+  return ARK::Utilities::get_json_interface().loader_autoconfigure_fromJSON(callback.c_str());
 }
-
-/*
-{
-  "success":true,
-  "network":{
-    "nethash":  "Hash",
-    "token":  "String",
-    "symbol": "String,
-    "explorer": "String",
-    "version":  int
-  }
-}
-*/
-ARK::Network ARK::API::Loader::Gettable::autoconfigurefromJSON(const char* const _jsonStr)
-{
-    auto jString = ARK::Utilities::make_json_string(_jsonStr);
-
-    return ARK::Network(
-        jString->valueIn("network", "nethash").c_str(),
-        jString->valueIn("network", "token").c_str(),
-        jString->valueIn("network", "symbol").c_str(),
-        jString->valueIn("network", "explorer").c_str(),
-        convert_to_int(jString->valueIn("network", "version"))
-    );
-}
-/*  =======================================  */
-/*  ==========================================================================  */
 

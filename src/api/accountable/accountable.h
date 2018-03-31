@@ -86,10 +86,9 @@ class Accountable : public API::Account::Gettable, virtual ARK::Utilities::Netwo
 	*
 	*   @brief:	Uses Ark Address to get Delegate Object from a Node via API.
 	**************************************************/
-		ARK::Delegate accountDelegates(const Address& _arkAddress)
-		{
-						return ARK::API::Account::Gettable::delegates(this->netConnector, _arkAddress);
-		};
+		std::unique_ptr<ARK::Delegate[]> accountDelegates(const Address& _arkAddress) {
+			return ARK::API::Account::Gettable::delegates(this->netConnector, _arkAddress);
+		}
 
 /*************************************************
 	*		/api/accounts?address=arkAddress
@@ -103,9 +102,8 @@ class Accountable : public API::Account::Gettable, virtual ARK::Utilities::Netwo
 	*
 	*   @brief:	Uses Ark Address to get Account Object from a Node via API.
 	**************************************************/
-		ARK::Account account(const Address& _arkAddress)
-		{
-						return ARK::API::Account::Gettable::account(this->netConnector, _arkAddress);
+		std::unique_ptr<ARK::Account[]> account(const Address& _arkAddress) {
+			return ARK::API::Account::Gettable::account(this->netConnector, _arkAddress);
 		};
 /*  ==========================================================================  */
 
