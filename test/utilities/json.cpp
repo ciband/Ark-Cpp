@@ -19,12 +19,82 @@ TEST(json, accounts_getBalance) {
 }
 
 TEST(json, accounts_getPublickey) {
+	const auto json_str =
+		"{"
+		"\"success\": true,"
+		"\"publicKey\": 0275776018638e5c40f1b922901e96cac2caa734585ef302b4a2801ee9a338a456,"
+		"}"
+		;
+	auto public_key = ARK::Utilities::get_json_interface().accounts_getPublickey_fromJSON(json_str);
+	ASSERT_STREQ("0275776018638e5c40f1b922901e96cac2caa734585ef302b4a2801ee9a338a456", public_key.getValue());
 }
 
 TEST(json, accounts_delegates_fee) {
+	const auto json_str =
+		"{"
+		"\"success\": true,"
+		"\"fee\": 100,"
+		"}"
+		;
+	auto fee = ARK::Utilities::get_json_interface().accounts_delegates_fee_fromJSON(json_str);
+	ASSERT_STREQ(".00000100", fee.ark());
+	ASSERT_STREQ("100", fee.arktoshi());
 }
 
 TEST(json, accounts_delegates) {
+	const auto json_str = 
+		"{"
+			"\"success\": true,"
+			"\"delegates\" : ["
+				"{"
+					"\"username\": sleepdeficit,"
+					"\"address\" : DHQ4Fjsyiop3qBR4otAjAu6cBHkgRELqGA,"
+					"\"publicKey\" : 0275776018638e5c40f1b922901e96cac2caa734585ef302b4a2801ee9a338a456,"
+					"\"vote\" : 111,"
+					"\"producedblocks\" : 7,"
+					"\"missedblocks\" : 5,"
+					"\"rate\" : 3,"
+					"\"approval\" : 95.5,"
+					"\"productivity\" : 94.4"
+				"},"
+				"{"
+					"\"username\": ciband,"
+					"\"address\" : DHQ4Fjsyiop3qBR4otAjAu6cBHkgRELqGB,"
+					"\"publicKey\" : 0275776018638e5c40f1b922901e96cac2caa734585ef302b4a2801ee9a338a457,"
+					"\"vote\" : 122,"
+					"\"producedblocks\" : 8,"
+					"\"missedblocks\" : 6,"
+					"\"rate\" : 4,"
+					"\"approval\" : 95.6,"
+					"\"productivity\" : 94.5"
+				"}"
+			"]"
+		"}"
+	;
+	const auto delegates = ARK::Utilities::get_json_interface().accounts_delegates_fromJSON(json_str);
+	ASSERT_STREQ("sleepdeficit", delegates[0].username());
+	ASSERT_STREQ("DHQ4Fjsyiop3qBR4otAjAu6cBHkgRELqGA", delegates[0].address().getValue());
+	ASSERT_STREQ("0275776018638e5c40f1b922901e96cac2caa734585ef302b4a2801ee9a338a456", delegates[0].public_key().getValue());
+	const auto& vote = delegates[0].vote();
+	ASSERT_STRNE("0.00000111", vote.ark());
+	ASSERT_STRNE("111", vote.arktoshi());
+	ASSERT_EQ(8, delegates[0].produced_blocks());
+	ASSERT_EQ(6, delegates[0].missed_blocks());
+	ASSERT_EQ(4, delegates[0].rate());
+	ASSERT_EQ(95.6, delegates[0].approval());
+	ASSERT_EQ(94.5, delegates[0].productivity());
+
+	ASSERT_STREQ("sleepdeficit", delegates[1].username());
+	ASSERT_STREQ("DHQ4Fjsyiop3qBR4otAjAu6cBHkgRELqGA", delegates[1].address().getValue());
+	ASSERT_STREQ("0275776018638e5c40f1b922901e96cac2caa734585ef302b4a2801ee9a338a456", delegates[1].public_key().getValue());
+	const auto& vote1 = delegates[1].vote();
+	ASSERT_STREQ("0.0", vote1.ark());
+	ASSERT_STREQ("0", vote1.arktoshi());
+	ASSERT_EQ(0, delegates[1].produced_blocks());
+	ASSERT_EQ(0, delegates[1].missed_blocks());
+	ASSERT_EQ(0, delegates[1].rate());
+	ASSERT_EQ(0.0, delegates[1].approval());
+	ASSERT_EQ(0.0, delegates[1].productivity());
 }
 TEST(json, accounts) {
 }
