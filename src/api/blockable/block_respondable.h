@@ -40,6 +40,8 @@ private:
     Balance supply_;
 
 public:
+	Status() = default;
+
     Status(
         const char* const e, 
         const char* const h,
@@ -78,6 +80,8 @@ private:
     char id_[64];
 
 public:
+	Height() = default;
+
     Height(const char* const h, const char* const i) : height_(), id_() { 
         strncpy(height_, h, sizeof(height_) / sizeof(height_[0]));
         strncpy(id_, i, sizeof(id_) / sizeof(id_[0]));

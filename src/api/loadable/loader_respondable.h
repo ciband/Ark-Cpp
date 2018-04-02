@@ -28,6 +28,8 @@ private:
     char blocksCount_[32];  //TODO review sizes
 
 public:
+	Status() = default;
+
     Status(
         const char* const l,
         int n,
@@ -63,6 +65,8 @@ private:
     char id_[32];
 
 public:
+	Sync() = default;
+
     Sync(
         const char* s,
         int b,

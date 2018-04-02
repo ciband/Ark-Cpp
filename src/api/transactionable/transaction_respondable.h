@@ -30,12 +30,13 @@ class Unconfirmed : public Printable {
 	
 
   public:
+	Unconfirmed() = default;
+
     Unconfirmed(const ARK::Transaction* const tx, size_t count) : count_(count) {
-	assert(count <= transactions_.size());
-      for (auto i = 0u; i < count_; ++i)
-      {
-        this->transactions_[i] = tx[i];
-      }
+		assert(count <= transactions_.size());
+		for (auto i = 0u; i < count_; ++i) {
+			this->transactions_[i] = tx[i];
+		}
     }
 
 	const std::array<ARK::Transaction, 5>& transactions() const noexcept { return transactions_; }
@@ -49,7 +50,6 @@ class Unconfirmed : public Printable {
     *   @brief: Prints API Transaction Unconfirmed Response to Serial
     **************************************************/
     size_t printTo(Print& p) const override;
-
 };
 /*************************************************/
 

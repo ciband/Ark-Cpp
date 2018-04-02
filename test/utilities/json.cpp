@@ -1,9 +1,21 @@
-#include "utilities/json.h"
-
 #include "gtest/gtest.h"
+
+#include "utilities/json.h"
 
 // Acount
 TEST(json, accounts_getBalance) {
+	const auto json_str = 
+		"{"
+		"\"success\": true,"
+		"\"balance\": 55,"
+		"\"unconfirmedBalance\": 66"
+		"}"
+	;
+	auto balances = ARK::Utilities::get_json_interface().accounts_getBalance_fromJSON(json_str);
+	ASSERT_STREQ(".00000055", balances.confirmed().ark());
+	ASSERT_STREQ("55", balances.confirmed().arktoshi());
+	ASSERT_STREQ(".00000066", balances.unconfirmed().ark());
+	ASSERT_STREQ("66", balances.unconfirmed().arktoshi());
 }
 
 TEST(json, accounts_getPublickey) {

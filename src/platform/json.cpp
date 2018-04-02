@@ -3,11 +3,12 @@
 #ifndef USE_IOT
 
 #include "api/accountable/account_respondable.h"
-#include "model/balance.h"
+#include "types/balance.h"
 #include "utilities/json.h"
 
 #include "Poco/JSON/Array.h"
 #include "Poco/JSON/Parser.h"
+#include "Poco/JSON/Object.h"
 
 #include <string>
 
@@ -25,8 +26,8 @@ public:
 
 	// /api/accounts/getBalance
 	ARK::API::Account::Respondable::Balances accounts_getBalance_fromJSON(const char* const json_str) override {
-		auto json = parser.parse(json_str);
-		auto object = json.extract<Object::Ptr>();
+		auto json = parser_.parse(json_str);
+		auto object = json.extract<Poco::JSON::Object::Ptr>();
 		return ARK::API::Account::Respondable::Balances(
 			Balance(object->getValue<String>("balance").c_str()), 
 			Balance(object->getValue<String>("unconfirmedBalance").c_str())
@@ -35,15 +36,15 @@ public:
 
 	// /api/accounts/getPublickey
 	Publickey accounts_getPublickey_fromJSON(const char* const json_str) override {
-		auto json = parser.parse(json_str);
-		auto object = json.extract<Object::Ptr>();
+		auto json = parser_.parse(json_str);
+		auto object = json.extract<Poco::JSON::Object::Ptr>();
 		return Publickey(object->getValue<String>("publicKey").c_str());
 	}
 
 	// /api/accounts/delegates/fee
 	Balance accounts_delegates_fee_fromJSON(const char* const json_str) override {
-		auto json = parser.parse(json_str);
-		auto object = json.extract<Object::Ptr>();
+		auto json = parser_.parse(json_str);
+		auto object = json.extract<Poco::JSON::Object::Ptr>();
 		return Balance(object->getValue<String>("fee").c_str());
 	}
 

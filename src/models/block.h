@@ -64,6 +64,8 @@ public:
 	char confirmations_[64];
 	Balance totalForged_;
 
+	Block() = default;
+
     Block(
         const char* const _id,
         int v,

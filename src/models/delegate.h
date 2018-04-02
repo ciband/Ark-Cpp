@@ -46,6 +46,8 @@ private:
 	double productivity_;
 
 public:
+	Delegate() = default;
+
     Delegate(
         const char* const u, 
         const char* const a, 

@@ -27,6 +27,8 @@ private:
 	char build_[64];
 
 public:
+	Version() = default;
+
 	Version(const char* const v, const char* const b) : version_(), build_() {
 		strncpy(version_, v, sizeof(version_) / sizeof(version_[0]));
 		strncpy(build_, b, sizeof(build_) / sizeof(build_[0]));

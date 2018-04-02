@@ -33,8 +33,7 @@ class Gettable
 /*    BROKEN: fix for large callbacks  */
 /*    Peers callback is ~28,000 bytes  */
     /*  /api/transactions  */
-    // String transactions(ARK::Utilities::Network::Connector netConnector);
-    // String transactionsfromJSON(String jsonStr);
+	std::unique_ptr<ARK::Transaction[]> transactions(ARK::Utilities::Network::Connector& netConnector);
 
 
 /*************************************************

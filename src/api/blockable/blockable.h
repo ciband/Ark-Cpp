@@ -16,10 +16,7 @@ namespace API {
 *		API's Block Model
 * 
 **************************************************/
-class Blockable :
-	public Block::Gettable,
-	virtual ARK::Utilities::Network::Connectable
-{
+class Blockable : public Block::Gettable, virtual ARK::Utilities::Network::Connectable {
 public:
 	/*************************************************
 	*		/api/blocks/get?id=_blockID

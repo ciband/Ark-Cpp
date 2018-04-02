@@ -6,7 +6,6 @@
 #include "api/blockable/block_respondable.h"
 #include "models/block.h"
 #include "utilities/connector.h"
-#include "utilities/json.h"
 #include "models/fees.h"
 
 namespace ARK {

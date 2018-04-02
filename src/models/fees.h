@@ -21,6 +21,8 @@ private:
     Balance multisignature_;
 
 public:
+	Fees() = default;
+
     Fees(
         const char* const s,
         const char* const v,

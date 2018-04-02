@@ -43,6 +43,8 @@ private:
 	int missedblocks_;
 
 public:
+	Search() = default;
+
 	Search(
 		const char* const u, 
 		const char* const a, 
@@ -87,6 +89,8 @@ private:
     std::unique_ptr<ARK::Voter[]> voters_;
 
 public:
+	Voters() = default;
+
     Voters(size_t c) : count_(c), voters_(new ARK::Voter[c]) { }
 
     const Voter& operator[](size_t index) const { return voters_.get()[index]; }
@@ -108,6 +112,8 @@ private:
 	Balance forged_;
 
 public:
+	ForgedByAccount() = default;
+
 	ForgedByAccount(
 		const char* const f, 
 		const char* const r, 
@@ -140,6 +146,8 @@ private:
 	std::array<Publickey, 10> delegate_keys_;
 
 public:
+	NextForgers() = default;
+
 	NextForgers(const char* const _currentBlock, const char* const _currentSlot, const Publickey* const _delegates);
 
 	const char* current_block() const noexcept { return currentBlock_; }
