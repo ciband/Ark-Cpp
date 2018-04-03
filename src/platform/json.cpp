@@ -18,15 +18,13 @@ namespace Utilities {
 namespace {
 
 class JSON : public JSONInterface {
-private:
-	Poco::JSON::Parser parser_;
-
 public:
 	JSON() = default;
 
 	// /api/accounts/getBalance
 	ARK::API::Account::Respondable::Balances accounts_getBalance_fromJSON(const char* const json_str) override {
-		auto json = parser_.parse(json_str);
+		Poco::JSON::Parser parser;
+		auto json = parser.parse(json_str);
 		auto object = json.extract<Poco::JSON::Object::Ptr>();
 		return ARK::API::Account::Respondable::Balances(
 			Balance(object->getValue<String>("balance").c_str()), 
@@ -36,22 +34,26 @@ public:
 
 	// /api/accounts/getPublickey
 	Publickey accounts_getPublickey_fromJSON(const char* const json_str) override {
-		auto json = parser_.parse(json_str);
+		Poco::JSON::Parser parser;
+		auto json = parser.parse(json_str);
 		auto object = json.extract<Poco::JSON::Object::Ptr>();
 		return Publickey(object->getValue<String>("publicKey").c_str());
 	}
 
 	// /api/accounts/delegates/fee
 	Balance accounts_delegates_fee_fromJSON(const char* const json_str) override {
-		auto json = parser_.parse(json_str);
+		Poco::JSON::Parser parser;
+		auto json = parser.parse(json_str);
 		auto object = json.extract<Poco::JSON::Object::Ptr>();
 		return Balance(object->getValue<String>("fee").c_str());
 	}
 
 	// /api/accounts/delegates
 	std::unique_ptr<ARK::Delegate[]> accounts_delegates_fromJSON(const char* const json_str) override {
-		auto json = parser_.parse(json_str);
-		auto array = json.extract<Poco::JSON::Array::Ptr>();
+		Poco::JSON::Parser parser;
+		auto json = parser.parse(json_str);
+		auto object = json.extract<Poco::JSON::Object::Ptr>();
+		auto array = object->getArray("delegates");
 		std::unique_ptr<ARK::Delegate[]> delegates(new ARK::Delegate[array->size()]);
 
 		for (auto i = 0u; i < array->size(); ++i) {
@@ -72,21 +74,28 @@ public:
 	}
 
 	// /api/accounts
-	std::unique_ptr<ARK::Account[]> accounts_fromJSON(const char* const _jsonStr) override {
-		/*auto jString = ARK::Utilities::make_json_string(_jsonStr);
-
-		return ARK::Account(
-			jString->subvalueIn("account", "address").c_str(),
-			jString->subvalueIn("account", "unconfirmedBalance").c_str(),
-			jString->subvalueIn("account", "balance").c_str(),
-			jString->subvalueIn("account", "publicKey").c_str(),
-			convert_to_int(jString->subvalueIn("account", "unconfirmedSignature")),
-			convert_to_int(jString->subvalueIn("account", "secondSignature")),
-			jString->subvalueIn("account", "secondPublicKey").c_str(),
-			jString->subvalueIn("account", "multisignatures").c_str(),
-			jString->subvalueIn("account", "u_multisignatures").c_str()
-		);*/
-		return nullptr;
+	std::unique_ptr<ARK::Account[]> accounts_fromJSON(const char* const json_str) override {
+		Poco::JSON::Parser parser;
+		auto json = parser.parse(json_str);
+		auto object = json.extract<Poco::JSON::Object::Ptr>();
+		auto array = object->getArray("account");
+		std::unique_ptr<ARK::Account[]> accounts(new ARK::Account[array->size()]);
+		
+		for (auto i = 0u; i < array->size(); ++i) {
+			const auto& account = array->getObject(i);
+			accounts[i] = ARK::Account(
+				account->getValue<std::string>("address").c_str(),
+				account->getValue<std::string>("unconfirmedBalance").c_str(),
+				account->getValue<std::string>("balance").c_str(),
+				account->getValue<std::string>("publicKey").c_str(),
+				account->getValue<int>("unconfirmedSignature"),
+				account->getValue<int>("secondSignature"),
+				account->getValue<std::string>("secondPublicKey").c_str(),
+				account->getValue<std::string>("multisignatures").c_str(),
+				account->getValue<std::string>("u_multisignatures").c_str()
+			);
+		}
+		return accounts;
 	}
 	
 	//TODO: /api/accounts/top 

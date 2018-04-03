@@ -22,7 +22,7 @@ TEST(json, accounts_getPublickey) {
 	const auto json_str =
 		"{"
 		"\"success\": true,"
-		"\"publicKey\": 0275776018638e5c40f1b922901e96cac2caa734585ef302b4a2801ee9a338a456,"
+		"\"publicKey\": \"0275776018638e5c40f1b922901e96cac2caa734585ef302b4a2801ee9a338a456\""
 		"}"
 		;
 	auto public_key = ARK::Utilities::get_json_interface().accounts_getPublickey_fromJSON(json_str);
@@ -33,7 +33,7 @@ TEST(json, accounts_delegates_fee) {
 	const auto json_str =
 		"{"
 		"\"success\": true,"
-		"\"fee\": 100,"
+		"\"fee\": 100"
 		"}"
 		;
 	auto fee = ARK::Utilities::get_json_interface().accounts_delegates_fee_fromJSON(json_str);
@@ -47,9 +47,9 @@ TEST(json, accounts_delegates) {
 			"\"success\": true,"
 			"\"delegates\" : ["
 				"{"
-					"\"username\": sleepdeficit,"
-					"\"address\" : DHQ4Fjsyiop3qBR4otAjAu6cBHkgRELqGA,"
-					"\"publicKey\" : 0275776018638e5c40f1b922901e96cac2caa734585ef302b4a2801ee9a338a456,"
+					"\"username\": \"sleepdeficit\","
+					"\"address\" : \"DHQ4Fjsyiop3qBR4otAjAu6cBHkgRELqGA\","
+					"\"publicKey\" : \"0275776018638e5c40f1b922901e96cac2caa734585ef302b4a2801ee9a338a456\","
 					"\"vote\" : 111,"
 					"\"producedblocks\" : 7,"
 					"\"missedblocks\" : 5,"
@@ -58,9 +58,9 @@ TEST(json, accounts_delegates) {
 					"\"productivity\" : 94.4"
 				"},"
 				"{"
-					"\"username\": ciband,"
-					"\"address\" : DHQ4Fjsyiop3qBR4otAjAu6cBHkgRELqGB,"
-					"\"publicKey\" : 0275776018638e5c40f1b922901e96cac2caa734585ef302b4a2801ee9a338a457,"
+					"\"username\": \"ciband\","
+					"\"address\" : \"DHQ4Fjsyiop3qBR4otAjAu6cBHkgRELqGB\","
+					"\"publicKey\" : \"0275776018638e5c40f1b922901e96cac2caa734585ef302b4a2801ee9a338a457\","
 					"\"vote\" : 122,"
 					"\"producedblocks\" : 8,"
 					"\"missedblocks\" : 6,"
@@ -76,25 +76,25 @@ TEST(json, accounts_delegates) {
 	ASSERT_STREQ("DHQ4Fjsyiop3qBR4otAjAu6cBHkgRELqGA", delegates[0].address().getValue());
 	ASSERT_STREQ("0275776018638e5c40f1b922901e96cac2caa734585ef302b4a2801ee9a338a456", delegates[0].public_key().getValue());
 	const auto& vote = delegates[0].vote();
-	ASSERT_STRNE("0.00000111", vote.ark());
-	ASSERT_STRNE("111", vote.arktoshi());
-	ASSERT_EQ(8, delegates[0].produced_blocks());
-	ASSERT_EQ(6, delegates[0].missed_blocks());
-	ASSERT_EQ(4, delegates[0].rate());
-	ASSERT_EQ(95.6, delegates[0].approval());
-	ASSERT_EQ(94.5, delegates[0].productivity());
+	ASSERT_STREQ(".00000111", vote.ark());
+	ASSERT_STREQ("111", vote.arktoshi());
+	ASSERT_EQ(7, delegates[0].produced_blocks());
+	ASSERT_EQ(5, delegates[0].missed_blocks());
+	ASSERT_EQ(3, delegates[0].rate());
+	ASSERT_NEAR(95.5, delegates[0].approval(), 0.1);
+	ASSERT_NEAR(94.4, delegates[0].productivity(), 0.1);
 
-	ASSERT_STREQ("sleepdeficit", delegates[1].username());
-	ASSERT_STREQ("DHQ4Fjsyiop3qBR4otAjAu6cBHkgRELqGA", delegates[1].address().getValue());
-	ASSERT_STREQ("0275776018638e5c40f1b922901e96cac2caa734585ef302b4a2801ee9a338a456", delegates[1].public_key().getValue());
+	ASSERT_STREQ("ciband", delegates[1].username());
+	ASSERT_STREQ("DHQ4Fjsyiop3qBR4otAjAu6cBHkgRELqGB", delegates[1].address().getValue());
+	ASSERT_STREQ("0275776018638e5c40f1b922901e96cac2caa734585ef302b4a2801ee9a338a457", delegates[1].public_key().getValue());
 	const auto& vote1 = delegates[1].vote();
-	ASSERT_STREQ("0.0", vote1.ark());
-	ASSERT_STREQ("0", vote1.arktoshi());
-	ASSERT_EQ(0, delegates[1].produced_blocks());
-	ASSERT_EQ(0, delegates[1].missed_blocks());
-	ASSERT_EQ(0, delegates[1].rate());
-	ASSERT_EQ(0.0, delegates[1].approval());
-	ASSERT_EQ(0.0, delegates[1].productivity());
+	ASSERT_STREQ(".00000122", vote1.ark());
+	ASSERT_STREQ("122", vote1.arktoshi());
+	ASSERT_EQ(8, delegates[1].produced_blocks());
+	ASSERT_EQ(6, delegates[1].missed_blocks());
+	ASSERT_EQ(4, delegates[1].rate());
+	ASSERT_NEAR(95.6, delegates[1].approval(), 0.1);
+	ASSERT_NEAR(94.5, delegates[1].productivity(), 0.1);
 }
 TEST(json, accounts) {
 	const auto json_str =
@@ -102,34 +102,26 @@ TEST(json, accounts) {
 			"\"success\": true,"
 			"\"account\": ["
 				"{"
-					"\"address\": DHQ4Fjsyiop3qBR4otAjAu6cBHkgRELqGA,"
+					"\"address\": \"DHQ4Fjsyiop3qBR4otAjAu6cBHkgRELqGA\","
 					"\"unconfirmedBalance\": 1234,"
 					"\"balance\": 5678,"
-					"\"publicKey\": 0275776018638e5c40f1b922901e96cac2caa734585ef302b4a2801ee9a338a456,"
+					"\"publicKey\": \"0275776018638e5c40f1b922901e96cac2caa734585ef302b4a2801ee9a338a456\","
 					"\"unconfirmedSignature\": 1,"
 					"\"secondSignature\": 1,"
-					"\"secondPublicKey\": 03ad2a481719c80571061f0c941d57e91c928700d8dd132726edfc0bf9c4cb2869,"
-					"\"multisignatures\": ["
-					"null"
-					"],"
-					"\"u_multisignatures\": ["
-					"null"
-					"]"
+					"\"secondPublicKey\": \"03ad2a481719c80571061f0c941d57e91c928700d8dd132726edfc0bf9c4cb2869\","
+					"\"multisignatures\": [],"
+					"\"u_multisignatures\": []"
 				"},"
 				"{"
-					"\"address\": DHQ4Fjsyiop3qBR4otAjAu6cBHkgRELqGB,"
+					"\"address\": \"DHQ4Fjsyiop3qBR4otAjAu6cBHkgRELqGB\","
 					"\"unconfirmedBalance\": 1235,"
 					"\"balance\": 5679,"
-					"\"publicKey\": 0275776018638e5c40f1b922901e96cac2caa734585ef302b4a2801ee9a338a457,"
+					"\"publicKey\": \"0275776018638e5c40f1b922901e96cac2caa734585ef302b4a2801ee9a338a457\","
 					"\"unconfirmedSignature\": 2,"
 					"\"secondSignature\": 2,"
-					"\"secondPublicKey\": 03ad2a481719c80571061f0c941d57e91c928700d8dd132726edfc0bf9c4cb2860,"
-					"\"multisignatures\": ["
-					"null"
-					"],"
-					"\"u_multisignatures\": ["
-					"null"
-					"]"
+					"\"secondPublicKey\": \"03ad2a481719c80571061f0c941d57e91c928700d8dd132726edfc0bf9c4cb2860\","
+					"\"multisignatures\": [],"
+					"\"u_multisignatures\": []"
 				"}"
 			"]"
 		"}"
@@ -139,31 +131,31 @@ TEST(json, accounts) {
 	
 	ASSERT_STREQ("DHQ4Fjsyiop3qBR4otAjAu6cBHkgRELqGA", accounts[0].address().getValue());
 	const auto& unconfirmed_balance = accounts[0].unconfirmed_balance();
-	ASSERT_STRNE(".00001234", unconfirmed_balance.ark());
-	ASSERT_STRNE("1234", unconfirmed_balance.arktoshi());
+	ASSERT_STREQ(".00001234", unconfirmed_balance.ark());
+	ASSERT_STREQ("1234", unconfirmed_balance.arktoshi());
 	const auto& balance = accounts[0].balance();
-	ASSERT_STRNE(".00005678", balance.ark());
-	ASSERT_STRNE("5678", balance.arktoshi());
+	ASSERT_STREQ(".00005678", balance.ark());
+	ASSERT_STREQ("5678", balance.arktoshi());
 	ASSERT_STREQ("0275776018638e5c40f1b922901e96cac2caa734585ef302b4a2801ee9a338a456", accounts[0].public_key().getValue());
 	ASSERT_EQ(1, accounts[0].unconfirmed_signature());
 	ASSERT_EQ(1, accounts[0].second_signature());
 	ASSERT_STREQ("03ad2a481719c80571061f0c941d57e91c928700d8dd132726edfc0bf9c4cb2869", accounts[0].second_public_key().getValue());
-	ASSERT_STREQ("[]", accounts[0].multi_signatures().getValue());
-	ASSERT_STREQ("[]", accounts[0].u_multi_signatures().getValue());
+	ASSERT_STREQ("[\n\n]", accounts[0].multi_signatures().getValue());
+	ASSERT_STREQ("[\n\n]", accounts[0].u_multi_signatures().getValue());
 
 	ASSERT_STREQ("DHQ4Fjsyiop3qBR4otAjAu6cBHkgRELqGB", accounts[1].address().getValue());
 	const auto& unconfirmed_balance1 = accounts[1].unconfirmed_balance();
-	ASSERT_STRNE(".00001235", unconfirmed_balance1.ark());
-	ASSERT_STRNE("1235", unconfirmed_balance1.arktoshi());
+	ASSERT_STREQ(".00001235", unconfirmed_balance1.ark());
+	ASSERT_STREQ("1235", unconfirmed_balance1.arktoshi());
 	const auto& balance1 = accounts[1].balance();
-	ASSERT_STRNE(".00005679", balance1.ark());
-	ASSERT_STRNE("5679", balance1.arktoshi());
+	ASSERT_STREQ(".00005679", balance1.ark());
+	ASSERT_STREQ("5679", balance1.arktoshi());
 	ASSERT_STREQ("0275776018638e5c40f1b922901e96cac2caa734585ef302b4a2801ee9a338a457", accounts[1].public_key().getValue());
-	ASSERT_EQ(1, accounts[1].unconfirmed_signature());
-	ASSERT_EQ(1, accounts[1].second_signature());
+	ASSERT_EQ(2, accounts[1].unconfirmed_signature());
+	ASSERT_EQ(2, accounts[1].second_signature());
 	ASSERT_STREQ("03ad2a481719c80571061f0c941d57e91c928700d8dd132726edfc0bf9c4cb2860", accounts[1].second_public_key().getValue());
-	ASSERT_STREQ("[]", accounts[1].multi_signatures().getValue());
-	ASSERT_STREQ("[]", accounts[1].u_multi_signatures().getValue());
+	ASSERT_STREQ("[\n\n]", accounts[1].multi_signatures().getValue());
+	ASSERT_STREQ("[\n\n]", accounts[1].u_multi_signatures().getValue());
 }
 TEST(json, accounts_top) {
 	const auto json_str = 

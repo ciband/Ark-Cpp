@@ -51,6 +51,8 @@ private:
     Signature u_multisignatures_;
     
 public:
+	Account() = default;
+
     Account(
         const char* const a, 
         const char* const ub,
