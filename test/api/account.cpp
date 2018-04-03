@@ -64,3 +64,7 @@ TEST(api, test_account) {
 	ASSERT_STREQ("[]", account[0].multi_signatures().getValue());
 	ASSERT_STREQ("[]", account[0].u_multi_signatures().getValue());
 }
+
+TEST(api, test_account_top) {
+	//TODO
+}

@@ -97,8 +97,88 @@ TEST(json, accounts_delegates) {
 	ASSERT_EQ(0.0, delegates[1].productivity());
 }
 TEST(json, accounts) {
+	const auto json_str =
+		"{"
+			"\"success\": true,"
+			"\"account\": ["
+				"{"
+					"\"address\": DHQ4Fjsyiop3qBR4otAjAu6cBHkgRELqGA,"
+					"\"unconfirmedBalance\": 1234,"
+					"\"balance\": 5678,"
+					"\"publicKey\": 0275776018638e5c40f1b922901e96cac2caa734585ef302b4a2801ee9a338a456,"
+					"\"unconfirmedSignature\": 1,"
+					"\"secondSignature\": 1,"
+					"\"secondPublicKey\": 03ad2a481719c80571061f0c941d57e91c928700d8dd132726edfc0bf9c4cb2869,"
+					"\"multisignatures\": ["
+					"null"
+					"],"
+					"\"u_multisignatures\": ["
+					"null"
+					"]"
+				"},"
+				"{"
+					"\"address\": DHQ4Fjsyiop3qBR4otAjAu6cBHkgRELqGB,"
+					"\"unconfirmedBalance\": 1235,"
+					"\"balance\": 5679,"
+					"\"publicKey\": 0275776018638e5c40f1b922901e96cac2caa734585ef302b4a2801ee9a338a457,"
+					"\"unconfirmedSignature\": 2,"
+					"\"secondSignature\": 2,"
+					"\"secondPublicKey\": 03ad2a481719c80571061f0c941d57e91c928700d8dd132726edfc0bf9c4cb2860,"
+					"\"multisignatures\": ["
+					"null"
+					"],"
+					"\"u_multisignatures\": ["
+					"null"
+					"]"
+				"}"
+			"]"
+		"}"
+	;
+
+	const auto accounts = ARK::Utilities::get_json_interface().accounts_fromJSON(json_str);
+	
+	ASSERT_STREQ("DHQ4Fjsyiop3qBR4otAjAu6cBHkgRELqGA", accounts[0].address().getValue());
+	const auto& unconfirmed_balance = accounts[0].unconfirmed_balance();
+	ASSERT_STRNE(".00001234", unconfirmed_balance.ark());
+	ASSERT_STRNE("1234", unconfirmed_balance.arktoshi());
+	const auto& balance = accounts[0].balance();
+	ASSERT_STRNE(".00005678", balance.ark());
+	ASSERT_STRNE("5678", balance.arktoshi());
+	ASSERT_STREQ("0275776018638e5c40f1b922901e96cac2caa734585ef302b4a2801ee9a338a456", accounts[0].public_key().getValue());
+	ASSERT_EQ(1, accounts[0].unconfirmed_signature());
+	ASSERT_EQ(1, accounts[0].second_signature());
+	ASSERT_STREQ("03ad2a481719c80571061f0c941d57e91c928700d8dd132726edfc0bf9c4cb2869", accounts[0].second_public_key().getValue());
+	ASSERT_STREQ("[]", accounts[0].multi_signatures().getValue());
+	ASSERT_STREQ("[]", accounts[0].u_multi_signatures().getValue());
+
+	ASSERT_STREQ("DHQ4Fjsyiop3qBR4otAjAu6cBHkgRELqGB", accounts[1].address().getValue());
+	const auto& unconfirmed_balance1 = accounts[1].unconfirmed_balance();
+	ASSERT_STRNE(".00001235", unconfirmed_balance1.ark());
+	ASSERT_STRNE("1235", unconfirmed_balance1.arktoshi());
+	const auto& balance1 = accounts[1].balance();
+	ASSERT_STRNE(".00005679", balance1.ark());
+	ASSERT_STRNE("5679", balance1.arktoshi());
+	ASSERT_STREQ("0275776018638e5c40f1b922901e96cac2caa734585ef302b4a2801ee9a338a457", accounts[1].public_key().getValue());
+	ASSERT_EQ(1, accounts[1].unconfirmed_signature());
+	ASSERT_EQ(1, accounts[1].second_signature());
+	ASSERT_STREQ("03ad2a481719c80571061f0c941d57e91c928700d8dd132726edfc0bf9c4cb2860", accounts[1].second_public_key().getValue());
+	ASSERT_STREQ("[]", accounts[1].multi_signatures().getValue());
+	ASSERT_STREQ("[]", accounts[1].u_multi_signatures().getValue());
 }
 TEST(json, accounts_top) {
+	const auto json_str = 
+		"{"
+		  "\"success\": true,"
+		  "\"accounts\": ["
+			"{"
+			  "\"address\": string,"
+			  "\"balance\": 0,"
+			  "\"publicKey\": string"
+			"}"
+		  "]"
+		"}"
+	;
+	//TODO
 }
 
 // Block

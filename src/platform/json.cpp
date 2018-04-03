@@ -50,22 +50,25 @@ public:
 
 	// /api/accounts/delegates
 	std::unique_ptr<ARK::Delegate[]> accounts_delegates_fromJSON(const char* const json_str) override {
-		/*auto jString = ARK::Utilities::make_json_string(_jsonStr);
-		for (auto delegate : jString->get_array("delegates")) {
-			// return the first for now
-			return Delegate(
-				delegate->get_value<std::string>("username").c_str(),
-				delegate->get_value<std::string>("address").c_str(),
-				delegate->get_value<std::string>("publicKey").c_str(),
-				delegate->get_value<std::string>("vote").c_str(),
-				delegate->get_value<int>("producedblocks"),
-				delegate->get_value<int>("missedblocks"),
-				delegate->get_value<int>("rate"),
-				delegate->get_value<float>("approval"),
-				delegate->get_value<float>("productivity")
+		auto json = parser_.parse(json_str);
+		auto array = json.extract<Poco::JSON::Array::Ptr>();
+		std::unique_ptr<ARK::Delegate[]> delegates(new ARK::Delegate[array->size()]);
+
+		for (auto i = 0u; i < array->size(); ++i) {
+			const auto& delegate = array->getObject(i);
+			delegates[i] = Delegate(
+				delegate->getValue<std::string>("username").c_str(),
+				delegate->getValue<std::string>("address").c_str(),
+				delegate->getValue<std::string>("publicKey").c_str(),
+				delegate->getValue<std::string>("vote").c_str(),
+				delegate->getValue<int>("producedblocks"),
+				delegate->getValue<int>("missedblocks"),
+				delegate->getValue<int>("rate"),
+				delegate->getValue<float>("approval"),
+				delegate->getValue<float>("productivity")
 			);
-		}*/
-		return nullptr;
+		}
+		return delegates;
 	}
 
 	// /api/accounts
