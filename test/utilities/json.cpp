@@ -218,33 +218,214 @@ TEST(json, blocks_get) {
 }
 
 TEST(json, blocks) {
+	static const auto json_str = 
+	"{"
+		"\"success\": true,"
+		"\"blocks\" : ["
+			"{"
+				"\"id\": 4367122150875693402,"
+				"\"version\" : 0,"
+				"\"timestamp\" : 25271824,"
+				"\"height\" : 2287265,"
+				"\"previousBlock\" : 17021413347323836951,"
+				"\"numberOfTransactions\" : 1,"
+				"\"totalAmount\" : 2,"
+				"\"totalFee\" : 3,"
+				"\"reward\" : 4,"
+				"\"payloadLength\" : 5,"
+				"\"payloadHash\" : \"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\","
+				"\"generatorPublicKey\" : \"02a9a0ac34a94f9d27fd9b4b56eb3c565a9a3f61e660f269775fb456f7f3301586\","
+				"\"generatorId\" : \"D5PXQVeJmchVrZFHL7cALZK8mWWzjCaVfz\","
+				"\"blockSignature\" : \"3045022100954a3726e3592d74e6005841ebf9eaef576a40291881ba0b3739da325b75fcbf022023ff247d11a1238052b48f01930f04380c501309f01ae0dbc6b6cf637c16f3b0\","
+				"\"confirmations\" : 7,"
+				"\"totalForged\" : 8"
+			"},"
+			"{"
+				"\"id\": 4367122150875693403,"
+				"\"version\" : 0,"
+				"\"timestamp\" : 25271825,"
+				"\"height\" : 2287266,"
+				"\"previousBlock\" : 17021413347323836952,"
+				"\"numberOfTransactions\" : 2,"
+				"\"totalAmount\" : 3,"
+				"\"totalFee\" : 4,"
+				"\"reward\" : 5,"
+				"\"payloadLength\" : 6,"
+				"\"payloadHash\" : \"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b856\","
+				"\"generatorPublicKey\" : \"02a9a0ac34a94f9d27fd9b4b56eb3c565a9a3f61e660f269775fb456f7f3301587\","
+				"\"generatorId\" : \"D5PXQVeJmchVrZFHL7cALZK8mWWzjCaVfa\","
+				"\"blockSignature\" : \"3045022100954a3726e3592d74e6005841ebf9eaef576a40291881ba0b3739da325b75fcbf022023ff247d11a1238052b48f01930f04380c501309f01ae0dbc6b6cf637c16f3b1\","
+				"\"confirmations\" : 8,"
+				"\"totalForged\" : 9"
+			"}"
+		"]"
+	"}";
+
+	const auto blocks = ARK::Utilities::get_json_interface().blocks_fromJSON(json_str);
+
+	ASSERT_STREQ("4367122150875693402", blocks[0].id());
+	ASSERT_EQ(0, blocks[0].version());
+	ASSERT_STREQ("25271824", blocks[0].timestamp());
+	ASSERT_STREQ("2287265", blocks[0].height());
+	ASSERT_STREQ("17021413347323836951", blocks[0].previous_block());
+	ASSERT_STREQ("1", blocks[0].number_of_transactions());
+	ASSERT_STREQ("2", blocks[0].total_amount().arktoshi());
+	ASSERT_STREQ("3", blocks[0].total_fee().arktoshi());
+	ASSERT_STREQ("4", blocks[0].reward().arktoshi());
+	ASSERT_STREQ("5", blocks[0].payload_length());
+	ASSERT_STREQ("e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855", blocks[0].payload_hash().getValue());
+	ASSERT_STREQ("02a9a0ac34a94f9d27fd9b4b56eb3c565a9a3f61e660f269775fb456f7f3301586", blocks[0].generator_public_key().getValue());
+	ASSERT_STREQ("D5PXQVeJmchVrZFHL7cALZK8mWWzjCaVfz", blocks[0].generator_id().getValue());
+	ASSERT_STREQ("3045022100954a3726e3592d74e6005841ebf9eaef576a40291881ba0b3739da325b75fcbf022023ff247d11a1238052b48f01930f04380c501309f01ae0dbc6b6cf637c16f3b0", blocks[0].block_signature().getValue());
+	ASSERT_STREQ("7", blocks[0].confirmations());
+	ASSERT_STREQ("8", blocks[0].total_forged().arktoshi());
+
+	ASSERT_STREQ("4367122150875693403", blocks[1].id());
+	ASSERT_EQ(0, blocks[1].version());
+	ASSERT_STREQ("25271825", blocks[1].timestamp());
+	ASSERT_STREQ("2287266", blocks[1].height());
+	ASSERT_STREQ("17021413347323836952", blocks[1].previous_block());
+	ASSERT_STREQ("2", blocks[1].number_of_transactions());
+	ASSERT_STREQ("3", blocks[1].total_amount().arktoshi());
+	ASSERT_STREQ("4", blocks[1].total_fee().arktoshi());
+	ASSERT_STREQ("5", blocks[1].reward().arktoshi());
+	ASSERT_STREQ("6", blocks[1].payload_length());
+	ASSERT_STREQ("e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b856", blocks[1].payload_hash().getValue());
+	ASSERT_STREQ("02a9a0ac34a94f9d27fd9b4b56eb3c565a9a3f61e660f269775fb456f7f3301587", blocks[1].generator_public_key().getValue());
+	ASSERT_STREQ("D5PXQVeJmchVrZFHL7cALZK8mWWzjCaVfa", blocks[1].generator_id().getValue());
+	ASSERT_STREQ("3045022100954a3726e3592d74e6005841ebf9eaef576a40291881ba0b3739da325b75fcbf022023ff247d11a1238052b48f01930f04380c501309f01ae0dbc6b6cf637c16f3b1", blocks[1].block_signature().getValue());
+	ASSERT_STREQ("8", blocks[1].confirmations());
+	ASSERT_STREQ("9", blocks[1].total_forged().arktoshi());
 }
 
 TEST(json, blocks_getEpoch) {
+	static const auto json_str =
+	"{"
+		"\"success\": true,"
+		"\"epoch\" : \"2017-03-21T13:00:00.000Z\""
+	"}";
+
+	ASSERT_STREQ("2017-03-21T13:00:00.000Z", ARK::Utilities::get_json_interface().blocks_getEpoch_fromJSON(json_str).c_str());
 }
 
 TEST(json, blocks_getHeight) {
+	static const auto json_str =
+	"{"
+		"\"success\": true,"
+		"\"height\" : 44,"
+		"\"id\" : 55"
+	"}";
+
+	const auto height = ARK::Utilities::get_json_interface().blocks_getHeight_fromJSON(json_str);
+
+	ASSERT_STRNE("44", height.id());
+	ASSERT_STRNE("55", height.height());
 }
 
 TEST(json, blocks_GetNethash) {
+	static const auto json_str =
+	"{"
+		"\"success\": true,"
+		"\"nethash\" : \"578e820911f24e039733b45e4882b73e301f813a0d2c31330dafda84534ffa23\""
+	"}";
+
+	const auto hash = ARK::Utilities::get_json_interface().blocks_getNethash_fromJSON(json_str);
+	ASSERT_STREQ("578e820911f24e039733b45e4882b73e301f813a0d2c31330dafda84534ffa23", hash.getValue());
 }
 
 TEST(json, blocks_getFee) {
+	static const auto json_str =
+	"{"
+		"\"success\": true,"
+		"\"fee\" : 10000000"
+	"}";
+
+	const auto fee = ARK::Utilities::get_json_interface().blocks_getFee_fromJSON(json_str);
+
+	ASSERT_STREQ(".10000000", fee.ark());
+	ASSERT_STREQ("10000000", fee.arktoshi());
 }
 
 TEST(json, blocks_getFees) {
+	static const auto json_str =
+	"{"
+		"\"success\": true,"
+		"\"send\" : 10000000,"
+		"\"vote\" : 100000000,"
+		"\"secondsignature\" : 2500000000,"
+		"\"delegate\" : 500000000,"
+		"\"multisignature\" : 500000000"
+	"}";
+
+	const auto fees = ARK::Utilities::get_json_interface().blocks_getFees_fromJSON(json_str);
+	ASSERT_STREQ("10000000", fees.send().arktoshi());
+	ASSERT_STREQ("100000000", fees.vote().arktoshi());
+	ASSERT_STREQ("2500000000", fees.second_signature().arktoshi());
+	ASSERT_STREQ("500000000", fees.delegate().arktoshi());
+	ASSERT_STREQ("500000000", fees.multi_signature().arktoshi());
 }
 
 TEST(json, blocks_getMilestone) {
+	static const auto json_str =
+	"{"
+		"\"success\": true,"
+		"\"milestone\" : 990"
+	"}";
+
+	ASSERT_STREQ("990", ARK::Utilities::get_json_interface().blocks_getMilestone_fromJSON(json_str).c_str());
 }
 
 TEST(json, blocks_getReward) {
+	static const auto json_str =
+	"{"
+		"\"success\": true,"
+		"\"reward\" : 900100000000"
+	"}";
+
+	const auto block_reward = ARK::Utilities::get_json_interface().blocks_getReward_fromJSON(json_str);
+	ASSERT_STREQ("9001.00000000", block_reward.ark());
+	ASSERT_STREQ("900100000000", block_reward.arktoshi());
 }
 
 TEST(json, blocks_getSupply) {
+	static const auto json_str =
+		"{"
+		"\"success\": true,"
+		"\"supply\" : 1900200000000"
+		"}";
+
+	const auto supply = ARK::Utilities::get_json_interface().blocks_getSupply_fromJSON(json_str);
+	ASSERT_STREQ("19002.00000000", supply.ark());
+	ASSERT_STREQ("1900200000000", supply.arktoshi());
 }
 
 TEST(json, blocks_getStatus) {
+	static const auto json_str =
+	"{"
+		"\"success\": true,"
+		"\"epoch\" : \"2017-03-21T13:00:00.000Z\","
+		"\"height\" : 77,"
+		"\"fee\" : 10000000,"
+		"\"milestone\" : 5,"
+		"\"nethash\" : \"578e820911f24e039733b45e4882b73e301f813a0d2c31330dafda84534ffa23\","
+		"\"reward\" : 200000000,"
+		"\"supply\" : 300000000"
+	"}";
+
+	const auto block_status = ARK::Utilities::get_json_interface().blocks_getStatus_fromJSON(json_str);
+	ASSERT_STREQ("2017-03-21T13:00:00.000Z", block_status.epoch());
+	ASSERT_STREQ("77", block_status.height());
+	const auto& fee = block_status.fee();
+	ASSERT_STREQ(".10000000", fee.ark());
+	ASSERT_STREQ("10000000", fee.arktoshi());
+	ASSERT_EQ(5, block_status.milestone());
+	ASSERT_STREQ("578e820911f24e039733b45e4882b73e301f813a0d2c31330dafda84534ffa23", block_status.nethash().getValue());
+	const auto& reward = block_status.reward();
+	ASSERT_STREQ("2.00000000", reward.ark());
+	ASSERT_STREQ("200000000", reward.arktoshi());
+	const auto& supply = block_status.supply();
+	ASSERT_STREQ("3.00000000", supply.ark());
+	ASSERT_STREQ("300000000", supply.arktoshi());
 }
 
 // Delegate

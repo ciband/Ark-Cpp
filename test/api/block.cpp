@@ -21,7 +21,6 @@ TEST(api, test_block) {
 	ASSERT_STREQ("D5PXQVeJmchVrZFHL7cALZK8mWWzjCaVfz", block.generator_id().getValue());
 	ASSERT_STREQ("3045022100954a3726e3592d74e6005841ebf9eaef576a40291881ba0b3739da325b75fcbf022023ff247d11a1238052b48f01930f04380c501309f01ae0dbc6b6cf637c16f3b0", block.block_signature().getValue());
 	ASSERT_STRNE("0", block.confirmations());
-	ASSERT_STRNE("", block.confirmations());
 	ASSERT_STREQ("200000000", block.total_forged().arktoshi());
 }
 
