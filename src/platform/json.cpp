@@ -23,42 +23,29 @@ public:
 
 	// /api/accounts/getBalance
 	ARK::API::Account::Respondable::Balances accounts_getBalance_fromJSON(const char* const json_str) override {
-		Poco::JSON::Parser parser;
-		auto json = parser.parse(json_str);
-		auto object = json.extract<Poco::JSON::Object::Ptr>();
+		const auto object = parse(json_str);
 		return ARK::API::Account::Respondable::Balances(
-			Balance(object->getValue<String>("balance").c_str()), 
-			Balance(object->getValue<String>("unconfirmedBalance").c_str())
+			Balance(object->getValue<std::string>("balance").c_str()), 
+			Balance(object->getValue<std::string>("unconfirmedBalance").c_str())
 		);
 	}
 
 	// /api/accounts/getPublickey
 	Publickey accounts_getPublickey_fromJSON(const char* const json_str) override {
-		Poco::JSON::Parser parser;
-		auto json = parser.parse(json_str);
-		auto object = json.extract<Poco::JSON::Object::Ptr>();
-		return Publickey(object->getValue<String>("publicKey").c_str());
+		const auto object = parse(json_str);
+		return Publickey(object->getValue<std::string>("publicKey").c_str());
 	}
 
 	// /api/accounts/delegates/fee
 	Balance accounts_delegates_fee_fromJSON(const char* const json_str) override {
-		Poco::JSON::Parser parser;
-		auto json = parser.parse(json_str);
-		auto object = json.extract<Poco::JSON::Object::Ptr>();
-		return Balance(object->getValue<String>("fee").c_str());
+		const auto object = parse(json_str);
+		return Balance(object->getValue<std::string>("fee").c_str());
 	}
 
 	// /api/accounts/delegates
 	std::unique_ptr<ARK::Delegate[]> accounts_delegates_fromJSON(const char* const json_str) override {
-		Poco::JSON::Parser parser;
-		auto json = parser.parse(json_str);
-		auto object = json.extract<Poco::JSON::Object::Ptr>();
-		auto array = object->getArray("delegates");
-		std::unique_ptr<ARK::Delegate[]> delegates(new ARK::Delegate[array->size()]);
-
-		for (auto i = 0u; i < array->size(); ++i) {
-			const auto& delegate = array->getObject(i);
-			delegates[i] = Delegate(
+		return parse_array<Delegate>(json_str, "delegates", [] (const Poco::JSON::Object::Ptr& delegate) {
+			return ARK::Delegate(
 				delegate->getValue<std::string>("username").c_str(),
 				delegate->getValue<std::string>("address").c_str(),
 				delegate->getValue<std::string>("publicKey").c_str(),
@@ -69,21 +56,13 @@ public:
 				delegate->getValue<float>("approval"),
 				delegate->getValue<float>("productivity")
 			);
-		}
-		return delegates;
+		});
 	}
 
 	// /api/accounts
 	std::unique_ptr<ARK::Account[]> accounts_fromJSON(const char* const json_str) override {
-		Poco::JSON::Parser parser;
-		auto json = parser.parse(json_str);
-		auto object = json.extract<Poco::JSON::Object::Ptr>();
-		auto array = object->getArray("account");
-		std::unique_ptr<ARK::Account[]> accounts(new ARK::Account[array->size()]);
-		
-		for (auto i = 0u; i < array->size(); ++i) {
-			const auto& account = array->getObject(i);
-			accounts[i] = ARK::Account(
+		return parse_array<Account>(json_str, "account", [] (const Poco::JSON::Object::Ptr& account) {
+			return ARK::Account(
 				account->getValue<std::string>("address").c_str(),
 				account->getValue<std::string>("unconfirmedBalance").c_str(),
 				account->getValue<std::string>("balance").c_str(),
@@ -94,41 +73,40 @@ public:
 				account->getValue<std::string>("multisignatures").c_str(),
 				account->getValue<std::string>("u_multisignatures").c_str()
 			);
-		}
-		return accounts;
+		});
 	}
 	
 	//TODO: /api/accounts/top 
 
 	// /api/blocks/get
-	ARK::Block blocks_get_fromJSON(const char* const jsonStr) override {
-		/*
-		auto jString = ARK::Utilities::make_json_string(jsonStr);
-
-	return ARK::Block(
-		jString->valueIn("block", "id").c_str(),
-		convert_to_int(jString->valueIn("block", "version")),
-		jString->valueIn("block", "timestamp").c_str(),
-		jString->valueIn("block", "height").c_str(),
-		jString->valueIn("block", "previousBlock").c_str(),
-		jString->valueIn("block", "numberOfTransactions").c_str(),
-		jString->valueIn("block", "totalAmount").c_str(),
-		jString->valueIn("block", "totalFee").c_str(),
-		jString->valueIn("block", "reward").c_str(),
-		jString->valueIn("block", "payloadLength").c_str(),
-		jString->valueIn("block", "payloadHash").c_str(),
-		jString->valueIn("block", "generatorPublicKey").c_str(),
-		jString->valueIn("block", "generatorId").c_str(),
-		jString->valueIn("block", "blockSignature").c_str(),
-		jString->valueIn("block", "confirmations").c_str(),
-		jString->valueIn("block", "totalForged").c_str()
-	);*/
-		return Block();
+	ARK::Block blocks_get_fromJSON(const char* const json_str) override {
+		auto object = parse(json_str);
+		const auto block = object->get("block");
+		object = block.extract<Poco::JSON::Object::Ptr>();
+		return ARK::Block(
+			object->getValue<std::string>("id").c_str(),
+			object->getValue<int>("version"),
+			object->getValue<std::string>("timestamp").c_str(),
+			object->getValue<std::string>("height").c_str(),
+			object->getValue<std::string>("previousBlock").c_str(),
+			object->getValue<std::string>("numberOfTransactions").c_str(),
+			object->getValue<std::string>("totalAmount").c_str(),
+			object->getValue<std::string>("totalFee").c_str(),
+			object->getValue<std::string>("reward").c_str(),
+			object->getValue<std::string>("payloadLength").c_str(),
+			object->getValue<std::string>("payloadHash").c_str(),
+			object->getValue<std::string>("generatorPublicKey").c_str(),
+			object->getValue<std::string>("generatorId").c_str(),
+			object->getValue<std::string>("blockSignature").c_str(),
+			object->getValue<std::string>("confirmations").c_str(),
+			object->getValue<std::string>("totalForged").c_str()
+		);
 	}
+
 	// /api/blocks
-	std::unique_ptr<ARK::Block[]> blocks_fromJSON(const char* const jsonStr) override {
+	std::unique_ptr<ARK::Block[]> blocks_fromJSON(const char* const json_str) override {
 		/*
-		auto jString = ARK::Utilities::make_json_string(jsonStr);
+		auto jString = ARK::Utilities::make_json_string(json_str);
 	int count;
 	std::unique_ptr<ARK::Block[]> blocks(new ARK::Block[count]);
 	for (auto i = 0; i < count; ++i) {
@@ -158,33 +136,33 @@ public:
 	}
 
 	// /api/blocks/getEpoch
-	String blocks_getEpoch_fromJSON(const char* const _jsonStr) override {
-		//auto jString = ARK::Utilities::make_json_string(_jsonStr);
+	String blocks_getEpoch_fromJSON(const char* const _json_str) override {
+		//auto jString = ARK::Utilities::make_json_string(_json_str);
 
 		//return jString->valueFor("epoch");
 		return "";
 	}
 
 	// /api/blocks/getHeight
-	ARK::API::Block::Respondable::Height blocks_getHeight_fromJSON(const char* const _jsonStr) override {
-		//auto jString = ARK::Utilities::make_json_string(_jsonStr);
+	ARK::API::Block::Respondable::Height blocks_getHeight_fromJSON(const char* const _json_str) override {
+		//auto jString = ARK::Utilities::make_json_string(_json_str);
 
 		//return ARK::API::Block::Respondable::Height(jString->valueFor("height").c_str(), jString->valueFor("id").c_str());
 		return ARK::API::Block::Respondable::Height();
 	}
 
 	// /api/blocks/getNethash
-	Hash blocks_getNethash_fromJSON(const char* const _jsonStr) override {
-		//auto jString = ARK::Utilities::make_json_string(_jsonStr);
+	Hash blocks_getNethash_fromJSON(const char* const _json_str) override {
+		//auto jString = ARK::Utilities::make_json_string(_json_str);
 
 		//return Hash(jString->valueFor("nethash").c_str());
 		return Hash();
 	}
 
 	// /api/blocks/getFee
-	Balance blocks_getFee_fromJSON(const char* const _jsonStr) override {
+	Balance blocks_getFee_fromJSON(const char* const _json_str) override {
 		/*
-		 auto jString = ARK::Utilities::make_json_string(_jsonStr);
+		 auto jString = ARK::Utilities::make_json_string(_json_str);
 
   return Balance(jString->valueFor("fee").c_str());
   */
@@ -192,9 +170,9 @@ public:
 	}
 
 	// /api/blocks/getFees
-	ARK::Fees blocks_getFees_fromJSON(const char* const _jsonStr) override {
+	ARK::Fees blocks_getFees_fromJSON(const char* const _json_str) override {
 		/*
-		auto jString = ARK::Utilities::make_json_string(_jsonStr);
+		auto jString = ARK::Utilities::make_json_string(_json_str);
 
     return Fees(
         jString->valueIn("fees", "send").c_str(),
@@ -208,9 +186,9 @@ public:
 	}
 
 	// /api/blocks/getMilestone
-	String blocks_getMilestone_fromJSON(const char* const _jsonStr) override {
+	String blocks_getMilestone_fromJSON(const char* const _json_str) override {
 		/*
-		  auto jString = ARK::Utilities::make_json_string(_jsonStr);
+		  auto jString = ARK::Utilities::make_json_string(_json_str);
 
   return jString->valueFor("milestone");
 */
@@ -218,27 +196,27 @@ public:
 	}
 
 	// /api/blocks/getReward
-	Balance blocks_getReward_fromJSON(const char* const _jsonStr) override {
+	Balance blocks_getReward_fromJSON(const char* const _json_str) override {
 		/*
-		  auto jString = ARK::Utilities::make_json_string(_jsonStr);
+		  auto jString = ARK::Utilities::make_json_string(_json_str);
 
   return Balance(jString->valueFor("reward").c_str());*/
 		return Balance();
 	}
 
 	// /api/blocks/getSupply
-	Balance blocks_getSupply_fromJSON(const char* const _jsonStr) override {
+	Balance blocks_getSupply_fromJSON(const char* const _json_str) override {
 		/*
-		auto jString = ARK::Utilities::make_json_string(_jsonStr);
+		auto jString = ARK::Utilities::make_json_string(_json_str);
 
   return Balance(jString->valueFor("supply").c_str());*/
 		return Balance();
 	}
 
 	// /api/blocks/getStatus
-	ARK::API::Block::Respondable::Status blocks_getStatus_fromJSON(const char* const _jsonStr) override {
+	ARK::API::Block::Respondable::Status blocks_getStatus_fromJSON(const char* const _json_str) override {
 		/*
-		    auto jString = ARK::Utilities::make_json_string(_jsonStr);
+		    auto jString = ARK::Utilities::make_json_string(_json_str);
   
     return ARK::API::Block::Respondable::Status(
         jString->valueFor("epoch").c_str(),
@@ -254,16 +232,16 @@ public:
 	}
 
 	// /api/delegates/count
-	uint16_t delegates_count_fromJSON(const char* const _jsonStr) override {
-		//auto jString = ARK::Utilities::make_json_string(_jsonStr);
+	uint16_t delegates_count_fromJSON(const char* const _json_str) override {
+		//auto jString = ARK::Utilities::make_json_string(_json_str);
 
 		//return convert_to_int(jString->valueFor("count"));
 		return 0;
 	}
 	// /api/delegates/search
-	ARK::API::Delegate::Respondable::Search delegates_search_fromJSON(const char* const _jsonStr) override {
+	ARK::API::Delegate::Respondable::Search delegates_search_fromJSON(const char* const _json_str) override {
 		/*
-		auto jString = ARK::Utilities::make_json_string(_jsonStr);
+		auto jString = ARK::Utilities::make_json_string(_json_str);
 
     return ARK::API::Delegate::Respondable::Search(
         jString->subarrayValueIn("delegates", 0, "username").c_str(),
@@ -276,10 +254,10 @@ public:
 		return ARK::API::Delegate::Respondable::Search();
 	}
 	// /api/delegates/voters
-	ARK::API::Delegate::Respondable::Voters delegates_voters_fromJSON(const char* const _jsonStr) override {
-		/*auto jString = ARK::Utilities::make_json_string(_jsonStr);
+	ARK::API::Delegate::Respondable::Voters delegates_voters_fromJSON(const char* const _json_str) override {
+		/*auto jString = ARK::Utilities::make_json_string(_json_str);
 
-    const auto voterCount = ARK::API::Helpers::substringCount(_jsonStr, "username");
+    const auto voterCount = ARK::API::Helpers::substringCount(_json_str, "username");
 
     ARK::API::Delegate::Respondable::Voters voters(voterCount);
 
@@ -297,8 +275,8 @@ public:
 		return ARK::API::Delegate::Respondable::Voters();
 	}
 	// /api/delegates/get
-	ARK::Delegate delegates_get_fromJSON(const char* const _jsonStr) override {
-		/*auto jString = ARK::Utilities::make_json_string(_jsonStr);
+	ARK::Delegate delegates_get_fromJSON(const char* const _json_str) override {
+		/*auto jString = ARK::Utilities::make_json_string(_json_str);
 
     return ARK::Delegate(
         jString->subvalueIn("delegate", "username").c_str(),
@@ -314,12 +292,12 @@ public:
 		return ARK::Delegate();
 	}
 	// /api/delegates
-	std::unique_ptr<ARK::Delegate[]> delegates_fromJSON(const char* const _jsonStr) override {
+	std::unique_ptr<ARK::Delegate[]> delegates_fromJSON(const char* const _json_str) override {
 		/*Serial.println("========== delegatesfromJSON ==========");
-//   // Serial.println("_jsonStr");
-//   // Serial.println(_jsonStr);
+//   // Serial.println("_json_str");
+//   // Serial.println(_json_str);
 //   // Serial.println();
-//   auto jString = ARK::Utilities::make_json_string(_jsonStr);
+//   auto jString = ARK::Utilities::make_json_string(_json_str);
 //   int top51Count = 51;
 //   // ARK::Delegate delegate[5];
 //   ARK::DelegatesResponse delegatesResponse(5);
@@ -348,15 +326,15 @@ public:
 		return nullptr;
 	}
 	// /api/delegates/fee
-	Balance delegates_fee_fromJSON(const char* const _jsonStr) override {
-		//auto jString = ARK::Utilities::make_json_string(_jsonStr);
+	Balance delegates_fee_fromJSON(const char* const _json_str) override {
+		//auto jString = ARK::Utilities::make_json_string(_json_str);
 
 		//return Balance(jString->valueFor("fee").c_str());
 		return Balance();
 	}
 	// /api/delegates/forging/getForgedByAccount
-	ARK::API::Delegate::Respondable::ForgedByAccount delegates_forging_getForgedByAccount_fromJSON(const char* const _jsonStr) override {
-		/*auto jString = ARK::Utilities::make_json_string(_jsonStr);
+	ARK::API::Delegate::Respondable::ForgedByAccount delegates_forging_getForgedByAccount_fromJSON(const char* const _json_str) override {
+		/*auto jString = ARK::Utilities::make_json_string(_json_str);
 
     return ARK::API::Delegate::Respondable::ForgedByAccount(
         jString->valueFor("fees").c_str(),
@@ -366,8 +344,8 @@ public:
 		return ARK::API::Delegate::Respondable::ForgedByAccount();
 	}
 	// /api/delegates/getNextForgers
-	ARK::API::Delegate::Respondable::NextForgers delegates_getNextForgers_fromJSON(const char* const _jsonStr) {
-		/*auto jString = ARK::Utilities::make_json_string(_jsonStr);
+	ARK::API::Delegate::Respondable::NextForgers delegates_getNextForgers_fromJSON(const char* const _json_str) {
+		/*auto jString = ARK::Utilities::make_json_string(_json_str);
 
 		Publickey delegates[10];
 
@@ -384,8 +362,8 @@ public:
 		return ARK::API::Delegate::Respondable::NextForgers();
 	}
 	// /api/loader/status
-	ARK::API::Loader::Respondable::Status loader_status_fromJSON(const char* const _jsonStr) override {
-		/*auto jString = ARK::Utilities::make_json_string(_jsonStr);
+	ARK::API::Loader::Respondable::Status loader_status_fromJSON(const char* const _json_str) override {
+		/*auto jString = ARK::Utilities::make_json_string(_json_str);
 
     return ARK::API::Loader::Respondable::Status(
         jString->valueFor("loaded").c_str(),
@@ -395,9 +373,9 @@ public:
 		return ARK::API::Loader::Respondable::Status();
 	}
 	// /api/loader/status/sync
-	ARK::API::Loader::Respondable::Sync loader_status_sync_fromJSON(const char* const _jsonStr) override {
+	ARK::API::Loader::Respondable::Sync loader_status_sync_fromJSON(const char* const _json_str) override {
 		/*
-		auto jString = ARK::Utilities::make_json_string(_jsonStr);
+		auto jString = ARK::Utilities::make_json_string(_json_str);
 
     return ARK::API::Loader::Respondable::Sync(
         jString->valueFor("syncing").c_str(),
@@ -408,8 +386,8 @@ public:
 		return ARK::API::Loader::Respondable::Sync();
 	}
 	// /api/loader/autoconfigure
-	ARK::Network loader_autoconfigure_fromJSON(const char* const _jsonStr) override {
-		/*auto jString = ARK::Utilities::make_json_string(_jsonStr);
+	ARK::Network loader_autoconfigure_fromJSON(const char* const _json_str) override {
+		/*auto jString = ARK::Utilities::make_json_string(_json_str);
 
     return ARK::Network(
         jString->valueIn("network", "nethash").c_str(),
@@ -422,8 +400,8 @@ public:
 		return ARK::Network();
 	}
 	// /api/multisignatures/pending
-	String multisignatures_pending_fromJSON(const char* const _jsonStr) override {
-		/*auto jString = ARK::Utilities::make_json_string(_jsonStr);
+	String multisignatures_pending_fromJSON(const char* const _json_str) override {
+		/*auto jString = ARK::Utilities::make_json_string(_json_str);
   
   return jString->valueFor("transactions");*/
 		return "";
@@ -432,8 +410,8 @@ public:
 	// TODO: /api/multisignatures/accounts
 
 	// /api/peers/get
-	ARK::Peer peers_get_fromJSON(const char* const _jsonStr) override {
-		/*auto jString = ARK::Utilities::make_json_string(_jsonStr);
+	ARK::Peer peers_get_fromJSON(const char* const _json_str) override {
+		/*auto jString = ARK::Utilities::make_json_string(_json_str);
 
     return ARK::Peer(
         jString->valueIn("peer", "ip").c_str(),
@@ -448,8 +426,8 @@ public:
 		return ARK::Peer();
 	}
 	// /api/peers
-	std::unique_ptr<ARK::Peer[]> peers_fromJSON(const char* const _jsonStr) override {
-		//   auto jString = ARK::Utilities::make_json_string(_jsonStr);
+	std::unique_ptr<ARK::Peer[]> peers_fromJSON(const char* const _json_str) override {
+		//   auto jString = ARK::Utilities::make_json_string(_json_str);
 		//   int peersCount = 10; // limited to 10
 		//   ARK::Peer::PeersResponse peersResponse(peersCount);
 		//   // for (int i = 0; i < peersCount; i++) {
@@ -470,8 +448,8 @@ public:
 	}
 
 	// /api/peers/version
-	ARK::API::Peer::Respondable::Version peers_version_fromJSON(const char* const _jsonStr) override {
-		/*auto jString = ARK::Utilities::make_json_string(_jsonStr);
+	ARK::API::Peer::Respondable::Version peers_version_fromJSON(const char* const _json_str) override {
+		/*auto jString = ARK::Utilities::make_json_string(_json_str);
 
     return ARK::API::Peer::Respondable::Version(
         jString->valueFor("version").c_str(),
@@ -481,15 +459,15 @@ public:
 	}
 
 	// /api/signatures_fee
-	Balance signatures_Fee_fromJSON(const char* const _jsonStr) override {
-		/*auto jString = ARK::Utilities::make_json_string(_jsonStr);
+	Balance signatures_Fee_fromJSON(const char* const _json_str) override {
+		/*auto jString = ARK::Utilities::make_json_string(_json_str);
 
   return Balance(jString->valueFor("fee").c_str());*/
 		return Balance();
 	}
 	// /api/transactions/get
-	ARK::Transaction transactions_get_fromJSON(const char* const jsonStr) override {
-		/*auto jString = ARK::Utilities::make_json_string(jsonStr); 
+	ARK::Transaction transactions_get_fromJSON(const char* const json_str) override {
+		/*auto jString = ARK::Utilities::make_json_string(json_str); 
 
     return ARK::Transaction(
         jString->valueIn("transaction", "id").c_str(),
@@ -509,8 +487,8 @@ public:
 		return ARK::Transaction();
 	}
 	// /api/transactions
-	std::unique_ptr<ARK::Transaction[]> transactions_fromJSON(const char* const jsonStr) {
-		/*//   auto jString = ARK::Utilities::make_json_string(jsonStr); 
+	std::unique_ptr<ARK::Transaction[]> transactions_fromJSON(const char* const json_str) {
+		/*//   auto jString = ARK::Utilities::make_json_string(json_str); 
 //   // ARK::Transaction transactions[50];
 //   String resp;
 //   for (int i = 0; i < 50; i++) {
@@ -565,10 +543,10 @@ public:
 		return nullptr;
 	}
 	// api/transactions/unconfirmed/get
-	ARK::API::Transaction::Respondable::Unconfirmed transactions_unconfirmed_get_fromJSON(const char* const jsonStr) override {
-		/*auto parser = ARK::Utilities::make_json_string(jsonStr);
+	ARK::API::Transaction::Respondable::Unconfirmed transactions_unconfirmed_get_fromJSON(const char* const json_str) override {
+		/*auto parser = ARK::Utilities::make_json_string(json_str);
 			
-	int txCount = subCount(jsonStr, "id");
+	int txCount = subCount(json_str, "id");
 
 	std::unique_ptr<ARK::Transaction[]> transactions(new ARK::Transaction[txCount]);
 			
@@ -594,10 +572,10 @@ return ARK::API::Transaction::Respondable::Unconfirmed(transactions.get(), txCou
 		return ARK::API::Transaction::Respondable::Unconfirmed();
 	}
 	// api/transactions/unconfirmed
-	std::unique_ptr<ARK::API::Transaction::Respondable::Unconfirmed[]> transactions_unconfirmed_fromJSON(const char* const jsonStr) override {
-		/*auto parser = ARK::Utilities::make_json_string(jsonStr);
+	std::unique_ptr<ARK::API::Transaction::Respondable::Unconfirmed[]> transactions_unconfirmed_fromJSON(const char* const json_str) override {
+		/*auto parser = ARK::Utilities::make_json_string(json_str);
 			
-			int txCount = subCount(jsonStr, "id");
+			int txCount = subCount(json_str, "id");
 
 			std::unique_ptr<ARK::Transaction[]> transactions(new ARK::Transaction[txCount]);
 			
@@ -633,6 +611,30 @@ return ARK::API::Transaction::Respondable::Unconfirmed(transactions.get(), txCou
 	// TODO: /peer/transactionsFromIds
 	// TODO: /peer/height
 	// TODO: /peer/status
+
+private:
+	Poco::JSON::Object::Ptr parse(const char* const json_str) {
+		Poco::JSON::Parser parser;
+		const auto json = parser.parse(json_str);
+		return json.extract<Poco::JSON::Object::Ptr>();
+	}
+
+	template <typename T>
+	std::unique_ptr<T[]> parse_array(
+		const char* const json_str, 
+		const char* const array_name, 
+		T (*make_t)(const Poco::JSON::Object::Ptr& node)
+	) {
+		const auto object = parse(json_str);
+		const auto array = object->getArray(array_name);
+		std::unique_ptr<T[]> data(new T[array->size()]);
+
+		for (auto i = 0u; i < array->size(); ++i) {
+			const auto& t = array->getObject(i);
+			data[i] = make_t(t);
+		}
+		return data;
+	}
 };
 
 }

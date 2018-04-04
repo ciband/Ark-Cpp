@@ -23,15 +23,6 @@ TEST(api, test_block) {
 	ASSERT_STRNE("0", block.confirmations());
 	ASSERT_STRNE("", block.confirmations());
 	ASSERT_STREQ("200000000", block.total_forged().arktoshi());
-
-
-	/*  ==================================  */
-	/* needs stream->string size fix for large callbacks */
-	//  String blocks = _arkManager.blocks();
-	//    Serial.println(blocks);
-	//    Serial.println();
-	//    delay(50);
-	/*  ==================================  */
 }
 
 TEST(api, test_block_epoch) {

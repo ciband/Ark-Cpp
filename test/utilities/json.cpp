@@ -4,13 +4,13 @@
 
 // Acount
 TEST(json, accounts_getBalance) {
-	const auto json_str = 
-		"{"
+	static const auto json_str = 
+	"{"
 		"\"success\": true,"
 		"\"balance\": 55,"
 		"\"unconfirmedBalance\": 66"
-		"}"
-	;
+	"}";
+
 	auto balances = ARK::Utilities::get_json_interface().accounts_getBalance_fromJSON(json_str);
 	ASSERT_STREQ(".00000055", balances.confirmed().ark());
 	ASSERT_STREQ("55", balances.confirmed().arktoshi());
@@ -19,58 +19,58 @@ TEST(json, accounts_getBalance) {
 }
 
 TEST(json, accounts_getPublickey) {
-	const auto json_str =
-		"{"
+	static const auto json_str =
+	"{"
 		"\"success\": true,"
 		"\"publicKey\": \"0275776018638e5c40f1b922901e96cac2caa734585ef302b4a2801ee9a338a456\""
-		"}"
-		;
+	"}";
+
 	auto public_key = ARK::Utilities::get_json_interface().accounts_getPublickey_fromJSON(json_str);
 	ASSERT_STREQ("0275776018638e5c40f1b922901e96cac2caa734585ef302b4a2801ee9a338a456", public_key.getValue());
 }
 
 TEST(json, accounts_delegates_fee) {
-	const auto json_str =
-		"{"
+	static const auto json_str =
+	"{"
 		"\"success\": true,"
 		"\"fee\": 100"
-		"}"
-		;
+	"}";
+
 	auto fee = ARK::Utilities::get_json_interface().accounts_delegates_fee_fromJSON(json_str);
 	ASSERT_STREQ(".00000100", fee.ark());
 	ASSERT_STREQ("100", fee.arktoshi());
 }
 
 TEST(json, accounts_delegates) {
-	const auto json_str = 
-		"{"
-			"\"success\": true,"
-			"\"delegates\" : ["
-				"{"
-					"\"username\": \"sleepdeficit\","
-					"\"address\" : \"DHQ4Fjsyiop3qBR4otAjAu6cBHkgRELqGA\","
-					"\"publicKey\" : \"0275776018638e5c40f1b922901e96cac2caa734585ef302b4a2801ee9a338a456\","
-					"\"vote\" : 111,"
-					"\"producedblocks\" : 7,"
-					"\"missedblocks\" : 5,"
-					"\"rate\" : 3,"
-					"\"approval\" : 95.5,"
-					"\"productivity\" : 94.4"
-				"},"
-				"{"
-					"\"username\": \"ciband\","
-					"\"address\" : \"DHQ4Fjsyiop3qBR4otAjAu6cBHkgRELqGB\","
-					"\"publicKey\" : \"0275776018638e5c40f1b922901e96cac2caa734585ef302b4a2801ee9a338a457\","
-					"\"vote\" : 122,"
-					"\"producedblocks\" : 8,"
-					"\"missedblocks\" : 6,"
-					"\"rate\" : 4,"
-					"\"approval\" : 95.6,"
-					"\"productivity\" : 94.5"
-				"}"
-			"]"
-		"}"
-	;
+	static const auto json_str = 
+	"{"
+		"\"success\": true,"
+		"\"delegates\" : ["
+			"{"
+				"\"username\": \"sleepdeficit\","
+				"\"address\" : \"DHQ4Fjsyiop3qBR4otAjAu6cBHkgRELqGA\","
+				"\"publicKey\" : \"0275776018638e5c40f1b922901e96cac2caa734585ef302b4a2801ee9a338a456\","
+				"\"vote\" : 111,"
+				"\"producedblocks\" : 7,"
+				"\"missedblocks\" : 5,"
+				"\"rate\" : 3,"
+				"\"approval\" : 95.5,"
+				"\"productivity\" : 94.4"
+			"},"
+			"{"
+				"\"username\": \"ciband\","
+				"\"address\" : \"DHQ4Fjsyiop3qBR4otAjAu6cBHkgRELqGB\","
+				"\"publicKey\" : \"0275776018638e5c40f1b922901e96cac2caa734585ef302b4a2801ee9a338a457\","
+				"\"vote\" : 122,"
+				"\"producedblocks\" : 8,"
+				"\"missedblocks\" : 6,"
+				"\"rate\" : 4,"
+				"\"approval\" : 95.6,"
+				"\"productivity\" : 94.5"
+			"}"
+		"]"
+	"}";
+
 	const auto delegates = ARK::Utilities::get_json_interface().accounts_delegates_fromJSON(json_str);
 	ASSERT_STREQ("sleepdeficit", delegates[0].username());
 	ASSERT_STREQ("DHQ4Fjsyiop3qBR4otAjAu6cBHkgRELqGA", delegates[0].address().getValue());
@@ -97,35 +97,34 @@ TEST(json, accounts_delegates) {
 	ASSERT_NEAR(94.5, delegates[1].productivity(), 0.1);
 }
 TEST(json, accounts) {
-	const auto json_str =
-		"{"
-			"\"success\": true,"
-			"\"account\": ["
-				"{"
-					"\"address\": \"DHQ4Fjsyiop3qBR4otAjAu6cBHkgRELqGA\","
-					"\"unconfirmedBalance\": 1234,"
-					"\"balance\": 5678,"
-					"\"publicKey\": \"0275776018638e5c40f1b922901e96cac2caa734585ef302b4a2801ee9a338a456\","
-					"\"unconfirmedSignature\": 1,"
-					"\"secondSignature\": 1,"
-					"\"secondPublicKey\": \"03ad2a481719c80571061f0c941d57e91c928700d8dd132726edfc0bf9c4cb2869\","
-					"\"multisignatures\": [],"
-					"\"u_multisignatures\": []"
-				"},"
-				"{"
-					"\"address\": \"DHQ4Fjsyiop3qBR4otAjAu6cBHkgRELqGB\","
-					"\"unconfirmedBalance\": 1235,"
-					"\"balance\": 5679,"
-					"\"publicKey\": \"0275776018638e5c40f1b922901e96cac2caa734585ef302b4a2801ee9a338a457\","
-					"\"unconfirmedSignature\": 2,"
-					"\"secondSignature\": 2,"
-					"\"secondPublicKey\": \"03ad2a481719c80571061f0c941d57e91c928700d8dd132726edfc0bf9c4cb2860\","
-					"\"multisignatures\": [],"
-					"\"u_multisignatures\": []"
-				"}"
-			"]"
-		"}"
-	;
+	static const auto json_str =
+	"{"
+		"\"success\": true,"
+		"\"account\": ["
+			"{"
+				"\"address\": \"DHQ4Fjsyiop3qBR4otAjAu6cBHkgRELqGA\","
+				"\"unconfirmedBalance\": 1234,"
+				"\"balance\": 5678,"
+				"\"publicKey\": \"0275776018638e5c40f1b922901e96cac2caa734585ef302b4a2801ee9a338a456\","
+				"\"unconfirmedSignature\": 1,"
+				"\"secondSignature\": 1,"
+				"\"secondPublicKey\": \"03ad2a481719c80571061f0c941d57e91c928700d8dd132726edfc0bf9c4cb2869\","
+				"\"multisignatures\": [],"
+				"\"u_multisignatures\": []"
+			"},"
+			"{"
+				"\"address\": \"DHQ4Fjsyiop3qBR4otAjAu6cBHkgRELqGB\","
+				"\"unconfirmedBalance\": 1235,"
+				"\"balance\": 5679,"
+				"\"publicKey\": \"0275776018638e5c40f1b922901e96cac2caa734585ef302b4a2801ee9a338a457\","
+				"\"unconfirmedSignature\": 2,"
+				"\"secondSignature\": 2,"
+				"\"secondPublicKey\": \"03ad2a481719c80571061f0c941d57e91c928700d8dd132726edfc0bf9c4cb2860\","
+				"\"multisignatures\": [],"
+				"\"u_multisignatures\": []"
+			"}"
+		"]"
+	"}";
 
 	const auto accounts = ARK::Utilities::get_json_interface().accounts_fromJSON(json_str);
 	
@@ -158,23 +157,64 @@ TEST(json, accounts) {
 	ASSERT_STREQ("[\n\n]", accounts[1].u_multi_signatures().getValue());
 }
 TEST(json, accounts_top) {
-	const auto json_str = 
+	static const auto json_str = 
+	"{"
+		"\"success\": true,"
+		"\"accounts\": ["
 		"{"
-		  "\"success\": true,"
-		  "\"accounts\": ["
-			"{"
-			  "\"address\": string,"
-			  "\"balance\": 0,"
-			  "\"publicKey\": string"
-			"}"
-		  "]"
+			"\"address\": string,"
+			"\"balance\": 0,"
+			"\"publicKey\": string"
 		"}"
-	;
+		"]"
+	"}";
+
 	//TODO
 }
 
 // Block
 TEST(json, blocks_get) {
+	static const auto json_str = 
+	"{"
+		"\"success\": true,"
+		"\"block\": {"
+		"\"id\": 4367122150875693402,"
+		"\"version\": 0,"
+		"\"timestamp\": 25271824,"
+		"\"height\": 2287265,"
+		"\"previousBlock\": 17021413347323836951,"
+		"\"numberOfTransactions\": 1,"
+		"\"totalAmount\": 2,"
+		"\"totalFee\": 3,"
+		"\"reward\": 200000000,"
+		"\"payloadLength\": 0,"
+		"\"payloadHash\": \"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\","
+		"\"generatorPublicKey\": \"02a9a0ac34a94f9d27fd9b4b56eb3c565a9a3f61e660f269775fb456f7f3301586\","
+		"\"generatorId\": \"D5PXQVeJmchVrZFHL7cALZK8mWWzjCaVfz\","
+		"\"blockSignature\": \"3045022100954a3726e3592d74e6005841ebf9eaef576a40291881ba0b3739da325b75fcbf022023ff247d11a1238052b48f01930f04380c501309f01ae0dbc6b6cf637c16f3b0\","
+		"\"confirmations\": 0,"
+		"\"totalForged\": 200000000"
+		"}"
+	"}";
+
+	const auto block = ARK::Utilities::get_json_interface().blocks_get_fromJSON(json_str);
+	ASSERT_STREQ("4367122150875693402", block.id());
+	ASSERT_EQ(0, block.version());
+	ASSERT_STREQ("25271824", block.timestamp());
+	ASSERT_STREQ("2287265", block.height());
+	ASSERT_STREQ("17021413347323836951", block.previous_block());
+	ASSERT_STREQ("1", block.number_of_transactions());
+	ASSERT_STREQ("2", block.total_amount().arktoshi());
+	ASSERT_STREQ("3", block.total_fee().arktoshi());
+	ASSERT_STREQ("200000000", block.reward().arktoshi());
+	ASSERT_STREQ("0", block.payload_length());
+	ASSERT_STREQ("e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855", block.payload_hash().getValue());
+	ASSERT_STREQ("02a9a0ac34a94f9d27fd9b4b56eb3c565a9a3f61e660f269775fb456f7f3301586", block.generator_public_key().getValue());
+	ASSERT_STREQ("D5PXQVeJmchVrZFHL7cALZK8mWWzjCaVfz", block.generator_id().getValue());
+	ASSERT_STREQ("3045022100954a3726e3592d74e6005841ebf9eaef576a40291881ba0b3739da325b75fcbf022023ff247d11a1238052b48f01930f04380c501309f01ae0dbc6b6cf637c16f3b0", block.block_signature().getValue());
+	ASSERT_STREQ("0", block.confirmations());
+	ASSERT_STREQ("0", block.confirmations());
+	ASSERT_STREQ("200000000", block.total_forged().arktoshi());
 }
 
 TEST(json, blocks) {
