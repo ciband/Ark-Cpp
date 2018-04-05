@@ -18,7 +18,7 @@ int ARK::API::Delegate::Gettable::count(ARK::Utilities::Network::Connector& _net
 /*  ====================================  */
 /*  ARK::API::Delegate::Gettable::search  */
 /*  /api/delegates/search?q=sleepdeficit  */
-ARK::API::Delegate::Respondable::Search ARK::API::Delegate::Gettable::search(
+std::unique_ptr<ARK::API::Delegate::Respondable::Search[]> ARK::API::Delegate::Gettable::search(
     ARK::Utilities::Network::Connector& _netConnector,
     const char* const _username)
 {

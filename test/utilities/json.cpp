@@ -72,6 +72,7 @@ TEST(json, accounts_delegates) {
 	"}";
 
 	const auto delegates = ARK::Utilities::get_json_interface().accounts_delegates_fromJSON(json_str);
+
 	ASSERT_STREQ("sleepdeficit", delegates[0].username());
 	ASSERT_STREQ("DHQ4Fjsyiop3qBR4otAjAu6cBHkgRELqGA", delegates[0].address().getValue());
 	ASSERT_STREQ("0275776018638e5c40f1b922901e96cac2caa734585ef302b4a2801ee9a338a456", delegates[0].public_key().getValue());
@@ -431,15 +432,92 @@ TEST(json, blocks_getStatus) {
 // Delegate
 
 TEST(json, delegates_count) {
+	static const auto json_str = 
+	"{"
+	  "\"success\": true,"
+	  "\"count\": 5"
+	"}";
+
+	ASSERT_EQ(5u, ARK::Utilities::get_json_interface().delegates_count_fromJSON(json_str));
 }
 
 TEST(json, delegates_search) {
+	static const auto json_str =
+	"{"
+		"\"success\": true,"
+		"\"delegates\": ["
+			"{"
+				"\"username\": \"sleepdeficit\","
+				"\"address\": \"DHQ4Fjsyiop3qBR4otAjAu6cBHkgRELqGA\","
+				"\"publicKey\": \"0275776018638e5c40f1b922901e96cac2caa734585ef302b4a2801ee9a338a456\","
+				"\"vote\": 56,"
+				"\"producedblocks\": 57,"
+				"\"missedblocks\": 58"
+			"},"
+			"{"
+				"\"username\": \"ciband\","
+				"\"address\": \"DHQ4Fjsyiop3qBR4otAjAu6cBHkgRELqGB\","
+				"\"publicKey\": \"0275776018638e5c40f1b922901e96cac2caa734585ef302b4a2801ee9a338a457\","
+				"\"vote\": 57,"
+				"\"producedblocks\": 58,"
+				"\"missedblocks\": 59"
+			"}"
+		"]"
+	"}";
+
+	const auto delegates = ARK::Utilities::get_json_interface().delegates_search_fromJSON(json_str);
+	
+	ASSERT_STREQ("sleepdeficit", delegates[0].username());
+	ASSERT_STREQ("DHQ4Fjsyiop3qBR4otAjAu6cBHkgRELqGA", delegates[0].address().getValue());
+	ASSERT_STREQ("0275776018638e5c40f1b922901e96cac2caa734585ef302b4a2801ee9a338a456", delegates[0].public_key().getValue());
+	const auto& vote = delegates[0].vote();
+	ASSERT_STREQ(".00000056", vote.ark());
+	ASSERT_STREQ("56", vote.arktoshi());
+	ASSERT_EQ(57, delegates[0].produced_blocks());
+	ASSERT_EQ(58, delegates[0].missed_blocks());
+
+	ASSERT_STREQ("ciband", delegates[1].username());
+	ASSERT_STREQ("DHQ4Fjsyiop3qBR4otAjAu6cBHkgRELqGB", delegates[1].address().getValue());
+	ASSERT_STREQ("0275776018638e5c40f1b922901e96cac2caa734585ef302b4a2801ee9a338a457", delegates[1].public_key().getValue());
+	const auto& vote1 = delegates[1].vote();
+	ASSERT_STREQ(".00000057", vote1.ark());
+	ASSERT_STREQ("57", vote1.arktoshi());
+	ASSERT_EQ(58, delegates[1].produced_blocks());
+	ASSERT_EQ(59, delegates[1].missed_blocks());
 }
 
 TEST(json, delegates_voters) {
+	// TODO
 }
 
 TEST(json, delegates_get) {
+	static const auto json_str = 
+	"{"
+		"\"success\": true,"
+		"\"delegate\": {"
+			"\"username\": \"sleepdeficit\","
+			"\"address\": \"DHQ4Fjsyiop3qBR4otAjAu6cBHkgRELqGA\","
+			"\"publicKey\": \"0275776018638e5c40f1b922901e96cac2caa734585ef302b4a2801ee9a338a456\","
+			"\"vote\": \"141988130482360\","
+			"\"producedblocks\": 26460,"
+			"\"missedblocks\": 359,"
+			"\"rate\": 44,"
+			"\"approval\": 1.07,"
+			"\"productivity\": 98.66"
+		"}"
+	"}";
+
+	const auto delegate = ARK::Utilities::get_json_interface().delegates_get_fromJSON(json_str);
+
+	ASSERT_STREQ("sleepdeficit", delegate.username());
+	ASSERT_STREQ("DHQ4Fjsyiop3qBR4otAjAu6cBHkgRELqGA", delegate.address().getValue());
+	ASSERT_STREQ("0275776018638e5c40f1b922901e96cac2caa734585ef302b4a2801ee9a338a456", delegate.public_key().getValue());
+	ASSERT_STREQ("141988130482360", delegate.vote().arktoshi());
+	ASSERT_EQ(26460, delegate.produced_blocks());
+	ASSERT_EQ(359, delegate.missed_blocks());
+	ASSERT_EQ(44, delegate.rate());
+	ASSERT_NEAR(1.07, delegate.approval(), 0.01);
+	ASSERT_NEAR(98.66, delegate.productivity(), 0.01);	
 }
 
 TEST(json, delegates) {

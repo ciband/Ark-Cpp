@@ -12,7 +12,10 @@ TEST(api, test_delegates_count) {
 	ARK::API::Manager _arkManager(ARK::Constants::Networks::Devnet::model);
 
 	ASSERT_NE(0, _arkManager.delegatesCount());
+}
 
+TEST(api, test_delegates_search) {
+	ARK::API::Manager _arkManager(ARK::Constants::Networks::Devnet::model);
 	const auto search = _arkManager.delegateSearch("sleepdeficit");
 	ASSERT_STREQ("sleepdeficit", search.username());
 	ASSERT_STREQ("DHQ4Fjsyiop3qBR4otAjAu6cBHkgRELqGA", search.address().getValue());
@@ -24,17 +27,13 @@ TEST(api, test_delegates_count) {
 	ASSERT_NE(0, search.missed_blocks());
 }
 
+TEST(api, test_delegate_voters) {
+	// TODO
+}
+
 TEST(api, test_delegate_user) {
 	ARK::API::Manager _arkManager(ARK::Constants::Networks::Devnet::model);
-/*  ==================================  */
-//  String delegateVotersDescription = _arkManager.delegateVoters(darkPubkey).getValue();
-//    Serial.println("delegateVotersDescription: ");
-//    Serial.println(delegateVotersDescription);
-//    Serial.println("\n=====\n");
-//    delay(50);
-/*  ==================================  */
 
-/*  ==================================  */
 	auto delegate = _arkManager.delegate("sleepdeficit");
 	ASSERT_STREQ("sleepdeficit", delegate.username());
 	ASSERT_STREQ("DHQ4Fjsyiop3qBR4otAjAu6cBHkgRELqGA", delegate.address().getValue());

@@ -20,14 +20,6 @@
 #include <Printable.h>
 #include <Print.h>
 
-inline int convert_to_int(const String& s) {
-	return s.toInt();
-}
-
-inline float convert_to_float(const String& s) {
-	return s.toFloat();
-}
-
 namespace ARK
 {
 namespace API
@@ -63,14 +55,6 @@ inline int substringCount(const String &str, const String &sub)
 #include <iomanip>
 #include <cstring>
 #include <stdexcept>
-
-inline int convert_to_int(const std::string& s) {
-	return std::stoi(s);
-}
-
-inline float convert_to_float(const std::string& s) {
-	return std::stof(s);
-}
 
 template <typename IntType>
 inline int random(IntType min, IntType max) {

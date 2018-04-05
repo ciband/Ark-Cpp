@@ -65,7 +65,7 @@ class Delegatable :
 		*			from a Node via API.
 		* 
 		**************************************************/
-		ARK::API::Delegate::Respondable::Search delegateSearch(const char* const username)
+		std::unique_ptr<ARK::API::Delegate::Respondable::Search[]> delegateSearch(const char* const username)
 		{
 			return ARK::API::Delegate::Gettable::search(this->netConnector, username);
 		};

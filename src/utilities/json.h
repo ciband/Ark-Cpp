@@ -73,7 +73,7 @@ public:
 	// /api/delegates/count
 	virtual uint16_t delegates_count_fromJSON(const char* const json_str) = 0;
 	// /api/delegates/search
-	virtual ARK::API::Delegate::Respondable::Search delegates_search_fromJSON(const char* const json_str) = 0;
+	virtual std::unique_ptr<ARK::API::Delegate::Respondable::Search[]> delegates_search_fromJSON(const char* const json_str) = 0;
 	// /api/delegates/voters
 	virtual ARK::API::Delegate::Respondable::Voters delegates_voters_fromJSON(const char* const json_str) = 0;
 	// /api/delegates/get

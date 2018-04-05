@@ -31,7 +31,7 @@ class Gettable
 		* ARK::API::Delegate::Gettable::search
 		*   /api/delegates/search?q=sleepdeficit
 		**************************************************/
-    ARK::API::Delegate::Respondable::Search search(
+    std::unique_ptr<ARK::API::Delegate::Respondable::Search[]> search(
         ARK::Utilities::Network::Connector& _netConnector,
         const char* const _username);
 

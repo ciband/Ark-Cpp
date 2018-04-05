@@ -200,64 +200,61 @@ public:
 
 	// /api/delegates/count
 	uint16_t delegates_count_fromJSON(const char* const json_str) override {
-		//auto jString = ARK::Utilities::makejson_string(json_str);
-
-		//return convert_to_int(jString->valueFor("count"));
-		return 0;
+		const auto object = parse(json_str);
+		return object->getValue<uint16_t>("count");
 	}
+
 	// /api/delegates/search
-	ARK::API::Delegate::Respondable::Search delegates_search_fromJSON(const char* const json_str) override {
-		/*
-		auto jString = ARK::Utilities::makejson_string(json_str);
-
-    return ARK::API::Delegate::Respondable::Search(
-        jString->subarrayValueIn("delegates", 0, "username").c_str(),
-        jString->subarrayValueIn("delegates", 0, "address").c_str(),
-        jString->subarrayValueIn("delegates", 0, "publicKey").c_str(),
-        jString->subarrayValueIn("delegates", 0, "vote").c_str(),
-        convert_to_int(jString->subarrayValueIn("delegates", 0, "producedblocks")),
-        convert_to_int(jString->subarrayValueIn("delegates", 0, "missedblocks"))
-    );*/
-		return ARK::API::Delegate::Respondable::Search();
+	std::unique_ptr<ARK::API::Delegate::Respondable::Search[]> delegates_search_fromJSON(const char* const json_str) override {
+		return parse_array<ARK::API::Delegate::Respondable::Search>(json_str, "delegates", [](const Poco::JSON::Object::Ptr& search) {
+			return ARK::API::Delegate::Respondable::Search(
+				search->getValue<std::string>("username").c_str(),
+				search->getValue<std::string>("address").c_str(),
+				search->getValue<std::string>("publicKey").c_str(),
+				search->getValue<std::string>("vote").c_str(),
+				search->getValue<int>("producedblocks"),
+				search->getValue<int>("missedblocks")
+			);
+		});
 	}
+
 	// /api/delegates/voters
 	ARK::API::Delegate::Respondable::Voters delegates_voters_fromJSON(const char* const json_str) override {
-		/*auto jString = ARK::Utilities::makejson_string(json_str);
-
-    const auto voterCount = ARK::API::Helpers::substringCount(json_str, "username");
-
-    ARK::API::Delegate::Respondable::Voters voters(voterCount);
-
-    for (auto i = 0; i < voterCount; ++i)
-    {
-        voters[i] = ARK::Voter(
-            jString->subarrayValueIn("accounts", i, "username").c_str(),
-            jString->subarrayValueIn("accounts", i, "address").c_str(),
-            jString->subarrayValueIn("accounts", i, "publicKey").c_str(),
-            jString->subarrayValueIn("accounts", i, "balance").c_str()
-        );
-    };
-
-    return voters;*/
-		return ARK::API::Delegate::Respondable::Voters();
+		return parse_array<ARK::Voter, ARK::API::Delegate::Respondable::Voters>(
+			json_str, 
+			"accounts", 
+			[] (const Poco::JSON::Object::Ptr& voter) {
+				return ARK::Voter(
+					voter->getValue<std::string>("username").c_str(),
+					voter->getValue<std::string>("address").c_str(),
+					voter->getValue<std::string>("publicKey").c_str(),
+					voter->getValue<std::string>("balance").c_str()
+				);
+			}, 
+			[] (size_t count) {
+				return ARK::API::Delegate::Respondable::Voters(count);
+			}
+		);
 	}
+
 	// /api/delegates/get
 	ARK::Delegate delegates_get_fromJSON(const char* const json_str) override {
-		/*auto jString = ARK::Utilities::makejson_string(json_str);
-
-    return ARK::Delegate(
-        jString->subvalueIn("delegate", "username").c_str(),
-        jString->subvalueIn("delegate", "address").c_str(),
-        jString->subvalueIn("delegate", "publicKey").c_str(),
-        jString->subvalueIn("delegate", "vote").c_str(),
-        convert_to_int(jString->subvalueIn("delegate", "producedblocks")),
-        convert_to_int(jString->subvalueIn("delegate", "missedblocks")),
-        convert_to_int(jString->subvalueIn("delegate", "rate")),
-        convert_to_float(jString->subvalueIn("delegate", "approval")),
-        convert_to_float(jString->subvalueIn("delegate", "productivity"))
-    );*/
-		return ARK::Delegate();
+		auto object = parse(json_str);
+		const auto delegate = object->get("delegate");
+		object = delegate.extract<Poco::JSON::Object::Ptr>();
+		return ARK::Delegate(
+			object->getValue<std::string>("username").c_str(),
+			object->getValue<std::string>("address").c_str(),
+			object->getValue<std::string>("publicKey").c_str(),
+			object->getValue<std::string>("vote").c_str(),
+			object->getValue<int>("producedblocks"),
+			object->getValue<int>("missedblocks"),
+			object->getValue<int>("rate"),
+			object->getValue<double>("approval"),
+			object->getValue<double>("productivity")
+		);
 	}
+
 	// /api/delegates
 	std::unique_ptr<ARK::Delegate[]> delegates_fromJSON(const char* const json_str) override {
 		/*Serial.println("========== delegatesfromJSON ==========");
@@ -586,7 +583,7 @@ private:
 		return json.extract<Poco::JSON::Object::Ptr>();
 	}
 
-	template <typename T>
+	/*template <typename T>
 	std::unique_ptr<T[]> parse_array(
 		const char* const json_str, 
 		const char* const array_name, 
@@ -595,6 +592,26 @@ private:
 		const auto object = parse(json_str);
 		const auto array = object->getArray(array_name);
 		std::unique_ptr<T[]> data(new T[array->size()]);
+
+		for (auto i = 0u; i < array->size(); ++i) {
+			const auto& t = array->getObject(i);
+			data[i] = make_t(t);
+		}
+		return data;
+	}*/
+
+	// helper function parse JSON array and create model data either in a dynamic array or in an array-like class
+	// TODO:  could add concept-like or enable-if checking for template types to enforce interface
+	template <typename T, typename CollectionType = std::unique_ptr<T[]>>
+	CollectionType parse_array(
+		const char* const json_str, 
+		const char* const array_name, 
+		T (*make_t)(const Poco::JSON::Object::Ptr& node),
+		CollectionType (*make_collection)(size_t count) = [] (size_t count) { return std::unique_ptr<T[]>(new T[count]); }
+	) {
+		const auto object = parse(json_str);
+		const auto array = object->getArray(array_name);
+		CollectionType data = make_collection(array->size());
 
 		for (auto i = 0u; i < array->size(); ++i) {
 			const auto& t = array->getObject(i);
