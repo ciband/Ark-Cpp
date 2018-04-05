@@ -59,20 +59,13 @@ TEST(api, test_delegate_pub_key) {
 	ASSERT_NE(0.0, delegate.approval());
 	ASSERT_NE(0.0, delegate.productivity());	
 }
+
+TEST(api, test_delegates) {
+	// TODO
+}
+
 TEST(api, test_delegate_fee) {
 	ARK::API::Manager _arkManager(ARK::Constants::Networks::Devnet::model);
-/*  ==================================  */
-/*    BROKEN: fix for large callbacks    */
-/*  Delegates callback is ~13,564 bytes  */
-//  String delegates = _arkManager.getDelegates();
-//    Serial.println("delegates: ");
-//    Serial.println(delegates);
-//    Serial.println("\n=====\n");
-//    delay(50);
-/*  ==================================  */
-
-/*  ==================================  */
-	//TODO:  fails here
 	const auto delegateFee = _arkManager.delegateFee();
 	ASSERT_STREQ("25.00000000", delegateFee.ark());
 	ASSERT_STREQ("2500000000", delegateFee.arktoshi());
@@ -87,7 +80,10 @@ TEST(api, test_delegate_forged_by_account) {
 	ASSERT_STRNE("0", forged_by_account.forged().arktoshi());
 	ASSERT_STRNE("0.0", forged_by_account.rewards().ark());
 	ASSERT_STRNE("0", forged_by_account.rewards().arktoshi());
-	
+}
+
+TEST(api, test_delegate_next_forgers) {
+	ARK::API::Manager _arkManager(ARK::Constants::Networks::Devnet::model);
 	const auto next_forgers = _arkManager.delegateNextForgers();
 	ASSERT_STRNE("0", next_forgers.current_block());
 	ASSERT_STRNE("0", next_forgers.current_slot());

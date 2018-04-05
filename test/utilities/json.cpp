@@ -521,12 +521,86 @@ TEST(json, delegates_get) {
 }
 
 TEST(json, delegates) {
+	static const auto json_str =
+	"{"
+		"\"success\": true,"
+		"\"delegates\" : ["
+		"{"
+			"\"username\": \"sleepdeficit\","
+			"\"address\": \"DHQ4Fjsyiop3qBR4otAjAu6cBHkgRELqGA\","
+			"\"publicKey\": \"0275776018638e5c40f1b922901e96cac2caa734585ef302b4a2801ee9a338a456\","
+			"\"vote\": \"141988130482360\","
+			"\"producedblocks\": 26460,"
+			"\"missedblocks\": 359,"
+			"\"rate\": 44,"
+			"\"approval\": 1.07,"
+			"\"productivity\": 98.66"
+		"},"
+		"{"
+			"\"username\": \"ciband\","
+			"\"address\": \"DHQ4Fjsyiop3qBR4otAjAu6cBHkgRELqGB\","
+			"\"publicKey\": \"0275776018638e5c40f1b922901e96cac2caa734585ef302b4a2801ee9a338a457\","
+			"\"vote\": \"141988130482361\","
+			"\"producedblocks\": 26461,"
+			"\"missedblocks\": 360,"
+			"\"rate\": 45,"
+			"\"approval\": 1.08,"
+			"\"productivity\": 98.67"
+		"}"
+		"]"
+	"}";
+
+	const auto delegates = ARK::Utilities::get_json_interface().delegates_fromJSON(json_str);
+
+	ASSERT_STREQ("sleepdeficit", delegates[0].username());
+	ASSERT_STREQ("DHQ4Fjsyiop3qBR4otAjAu6cBHkgRELqGA", delegates[0].address().getValue());
+	ASSERT_STREQ("0275776018638e5c40f1b922901e96cac2caa734585ef302b4a2801ee9a338a456", delegates[0].public_key().getValue());
+	ASSERT_STREQ("141988130482360", delegates[0].vote().arktoshi());
+	ASSERT_EQ(26460, delegates[0].produced_blocks());
+	ASSERT_EQ(359, delegates[0].missed_blocks());
+	ASSERT_EQ(44, delegates[0].rate());
+	ASSERT_NEAR(1.07, delegates[0].approval(), 0.01);
+	ASSERT_NEAR(98.66, delegates[0].productivity(), 0.01);
+
+	ASSERT_STREQ("ciband", delegates[1].username());
+	ASSERT_STREQ("DHQ4Fjsyiop3qBR4otAjAu6cBHkgRELqGB", delegates[1].address().getValue());
+	ASSERT_STREQ("0275776018638e5c40f1b922901e96cac2caa734585ef302b4a2801ee9a338a457", delegates[1].public_key().getValue());
+	ASSERT_STREQ("141988130482361", delegates[1].vote().arktoshi());
+	ASSERT_EQ(26461, delegates[1].produced_blocks());
+	ASSERT_EQ(360, delegates[1].missed_blocks());
+	ASSERT_EQ(45, delegates[1].rate());
+	ASSERT_NEAR(1.08, delegates[1].approval(), 0.01);
+	ASSERT_NEAR(98.67, delegates[1].productivity(), 0.01);
 }
 
 TEST(json, delegates_fee) {
+	static const auto json_str =
+	"{"
+		"\"success\": true,"
+		"\"fee\": 9005"
+	"}";
+
+	const auto fee = ARK::Utilities::get_json_interface().delegates_fee_fromJSON(json_str);
+	ASSERT_STREQ(".00009005", fee.ark());
+	ASSERT_STREQ("9005", fee.arktoshi());
 }
 
 TEST(json, delegates_forging_getForgedByAccount) {
+	static const auto json_str =
+	"{"
+		"\"success\": true,"
+		"\"fees\" : 123456789,"
+		"\"rewards\" : 987654321,"
+		"\"forged\" : 132435465768798090"
+	"}";
+
+	const auto forged_by_account = ARK::Utilities::get_json_interface().delegates_forging_getForgedByAccount_fromJSON(json_str);
+	ASSERT_STREQ("1.23456789", forged_by_account.fees().ark());
+	ASSERT_STREQ("123456789", forged_by_account.fees().arktoshi());
+	ASSERT_STREQ("9.87654321", forged_by_account.rewards().ark());
+	ASSERT_STREQ("987654321", forged_by_account.rewards().arktoshi());
+	ASSERT_STREQ("1324354657.68798090", forged_by_account.forged().ark());
+	ASSERT_STREQ("132435465768798090", forged_by_account.forged().arktoshi());
 }
 
 TEST(json, delegates_getNextForgers) {

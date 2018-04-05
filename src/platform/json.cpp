@@ -257,56 +257,37 @@ public:
 
 	// /api/delegates
 	std::unique_ptr<ARK::Delegate[]> delegates_fromJSON(const char* const json_str) override {
-		/*Serial.println("========== delegatesfromJSON ==========");
-//   // Serial.println("json_str");
-//   // Serial.println(json_str);
-//   // Serial.println();
-//   auto jString = ARK::Utilities::makejson_string(json_str);
-//   int top51Count = 51;
-//   // ARK::Delegate delegate[5];
-//   ARK::DelegatesResponse delegatesResponse(5);
-//   for (int i = 0; i < 5; i++) {
-//     ARK::Delegate delegate = {
-//       jString->subarrayValueIn("delegates", i, "username"),
-//       jString->subarrayValueIn("delegates", i, "address"),
-//       jString->subarrayValueIn("delegates", i, "publicKey"),
-//       jString->subarrayValueIn("delegates", i, "vote"),
-//       jString->subarrayValueIn("delegates", i, "producedblocks").toInt(),
-//       jString->subarrayValueIn("delegates", i, "missedblocks").toInt(),
-//       jString->subarrayValueIn("delegates", i, "rate").toInt(),
-//       jString->subarrayValueIn("delegates", i, "approval").toFloat(),
-//       jString->subarrayValueIn("delegates", i, "productivity").toFloat()
-//     };
-//     delegatesResponse.list[i] = delegate;
-//   };
-//   String resp;
-//   for ( int i = 0; i < 5; i++ ) {
-//     resp += "delegate ";  resp += i + 1;	resp += ":\n	";
-//       resp += delegatesResponse.list[i].description();
-//   };
-//   resp += "totalCount:\n";
-//     resp += jString->valueFor("totalCount");
-//   return resp;*/
-		return nullptr;
+		return parse_array<ARK::Delegate>(json_str, "delegates", [] (const Poco::JSON::Object::Ptr& delegate) {
+			return ARK::Delegate(
+				delegate->getValue<std::string>("username").c_str(),
+				delegate->getValue<std::string>("address").c_str(),
+				delegate->getValue<std::string>("publicKey").c_str(),
+				delegate->getValue<std::string>("vote").c_str(),
+				delegate->getValue<int>("producedblocks"),
+				delegate->getValue<int>("missedblocks"),
+				delegate->getValue<int>("rate"),
+				delegate->getValue<double>("approval"),
+				delegate->getValue<double>("productivity")
+			);
+		});
 	}
+
 	// /api/delegates/fee
 	Balance delegates_fee_fromJSON(const char* const json_str) override {
-		//auto jString = ARK::Utilities::makejson_string(json_str);
-
-		//return Balance(jString->valueFor("fee").c_str());
-		return Balance();
+		const auto object = parse(json_str);
+		return Balance(object->getValue<std::string>("fee").c_str());
 	}
+
 	// /api/delegates/forging/getForgedByAccount
 	ARK::API::Delegate::Respondable::ForgedByAccount delegates_forging_getForgedByAccount_fromJSON(const char* const json_str) override {
-		/*auto jString = ARK::Utilities::makejson_string(json_str);
-
-    return ARK::API::Delegate::Respondable::ForgedByAccount(
-        jString->valueFor("fees").c_str(),
-        jString->valueFor("rewards").c_str(),
-        jString->valueFor("forged").c_str()
-    );*/
-		return ARK::API::Delegate::Respondable::ForgedByAccount();
+		const auto object = parse(json_str);
+		return ARK::API::Delegate::Respondable::ForgedByAccount(
+			object->getValue<std::string>("fees").c_str(),
+			object->getValue<std::string>("rewards").c_str(),
+			object->getValue<std::string>("forged").c_str()
+		);
 	}
+
 	// /api/delegates/getNextForgers
 	ARK::API::Delegate::Respondable::NextForgers delegates_getNextForgers_fromJSON(const char* const json_str) {
 		/*auto jString = ARK::Utilities::makejson_string(json_str);
