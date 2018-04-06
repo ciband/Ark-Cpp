@@ -604,6 +604,42 @@ TEST(json, delegates_forging_getForgedByAccount) {
 }
 
 TEST(json, delegates_getNextForgers) {
+	static const auto json_str =
+	"{"
+		"\"success\": true,"
+		"\"currentBlock\" : 12345678,"
+		"\"currentSlot\" : 777,"
+		"\"delegates\" : ["
+			"\"02b1d2ea7c265db66087789f571fceb8cc2b2d89e296ad966efb8ed51855f2ae0b\","
+			"\"02e2d9b09e655a950656b48dc1240ca98550e9369cbeb394381975d39100bb09bb\","
+			"\"0344f455358055213235a21eff6deffa4d8ded38e43b9103e10184cc4c108ee81c\","
+			"\"03331b3bdebd082d0c43d08b20a687c7b55adde6e39766d96bf6188d6646330aef\","
+			"\"027c550ecc71e4d9b832cf83c1c5c4d7c22dc43e3a451fea887c82a6ef55bf52fa\","
+			"\"030da05984d579395ce276c0dd6ca0a60140a3c3d964423a04e7abe110d60a15e9\","
+			"\"0371e0dabfd774b4f53fb9c5386a31ee4b3cb951529f18fdb5b8b7e21dbfb4b885\","
+			"\"02cded5c40a4eb73d70eb903752839e74f7c1553e46597c2f1b6f27bac1966f429\","
+			"\"020431436cf94f3c6a6ba566fe9e42678db8486590c732ca6c3803a10a86f50b92\","
+			"\"03cefbfa0c1c853084591b62a9aad0116029eaebdc27c2e3b811b1b0aebb928fc6\""
+		"]"
+	"}";
+
+	const auto next_forgers = ARK::Utilities::get_json_interface().delegates_getNextForgers_fromJSON(json_str);
+	ASSERT_STREQ("12345678", next_forgers.current_block());
+	ASSERT_STREQ("777", next_forgers.current_slot());
+	static const std::array<Publickey, 10> delegates = {
+		"02b1d2ea7c265db66087789f571fceb8cc2b2d89e296ad966efb8ed51855f2ae0b",
+		"02e2d9b09e655a950656b48dc1240ca98550e9369cbeb394381975d39100bb09bb",
+		"0344f455358055213235a21eff6deffa4d8ded38e43b9103e10184cc4c108ee81c",
+		"03331b3bdebd082d0c43d08b20a687c7b55adde6e39766d96bf6188d6646330aef",
+		"027c550ecc71e4d9b832cf83c1c5c4d7c22dc43e3a451fea887c82a6ef55bf52fa",
+		"030da05984d579395ce276c0dd6ca0a60140a3c3d964423a04e7abe110d60a15e9",
+		"0371e0dabfd774b4f53fb9c5386a31ee4b3cb951529f18fdb5b8b7e21dbfb4b885",
+		"02cded5c40a4eb73d70eb903752839e74f7c1553e46597c2f1b6f27bac1966f429",
+		"020431436cf94f3c6a6ba566fe9e42678db8486590c732ca6c3803a10a86f50b92",
+		"03cefbfa0c1c853084591b62a9aad0116029eaebdc27c2e3b811b1b0aebb928fc6"
+	};
+
+	ASSERT_EQ(delegates, next_forgers.delegate_keys());  
 }
 
 // Loader

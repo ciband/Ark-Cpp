@@ -40,6 +40,14 @@
         const char* getValue() const { return value_; }     
     };
 
+	inline bool operator==(const publickey_t& lhs, const publickey_t& rhs) { return strcmp(lhs.getValue(), rhs.getValue()) == 0; }
+	inline bool operator!=(const publickey_t& lhs, const publickey_t& rhs) { return !(lhs == rhs); }
+
+	inline bool operator< (const publickey_t& lhs, const publickey_t& rhs) { return strcmp(lhs.getValue(), rhs.getValue()) < 0; }
+	inline bool operator> (const publickey_t& lhs, const publickey_t& rhs) { return rhs < lhs; }
+	inline bool operator<=(const publickey_t& lhs, const publickey_t& rhs) { return !(lhs > rhs); }
+	inline bool operator>=(const publickey_t& lhs, const publickey_t& rhs) { return !(lhs < rhs); }
+
     typedef publickey_t Publickey;
 
 

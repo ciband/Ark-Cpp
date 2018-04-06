@@ -290,22 +290,23 @@ public:
 
 	// /api/delegates/getNextForgers
 	ARK::API::Delegate::Respondable::NextForgers delegates_getNextForgers_fromJSON(const char* const json_str) {
-		/*auto jString = ARK::Utilities::makejson_string(json_str);
-
-		Publickey delegates[10];
-
-		for (int i = 0; i < 10; i++)
-		{
-			delegates[i] = Publickey(jString->subvalueFor("delegates", i).c_str());
-		};
-
+		auto object = parse(json_str);
+		//const auto delegates = object->get("delegates");
+		//auto delegates_object = delegates.extract<Poco::JSON::Object::Ptr>();
+		auto delegates = parse_array<Publickey>(
+			object, 
+			"delegates",
+			[] (const Poco::Dynamic::Var& node) {
+				return Publickey(node.extract<std::string>().c_str());
+			}
+		);
 		return ARK::API::Delegate::Respondable::NextForgers(
-			jString->valueFor("currentBlock").c_str(),
-			jString->valueFor("currentSlot").c_str(),
-			delegates
-		);*/
-		return ARK::API::Delegate::Respondable::NextForgers();
+			object->getValue<std::string>("currentBlock").c_str(),
+			object->getValue<std::string>("currentSlot").c_str(),
+			delegates.get()
+		);
 	}
+
 	// /api/loader/status
 	ARK::API::Loader::Respondable::Status loader_status_fromJSON(const char* const json_str) override {
 		/*auto jString = ARK::Utilities::makejson_string(json_str);
@@ -591,11 +592,38 @@ private:
 		CollectionType (*make_collection)(size_t count) = [] (size_t count) { return std::unique_ptr<T[]>(new T[count]); }
 	) {
 		const auto object = parse(json_str);
+		return parse_array(object, array_name, make_t, make_collection);
+	}
+
+	template <typename T, typename CollectionType = std::unique_ptr<T[]>>
+	CollectionType parse_array(
+		Poco::SharedPtr<Poco::JSON::Object> object,
+		const char* const array_name,
+		T (*make_t)(const Poco::JSON::Object::Ptr& node),
+		CollectionType(*make_collection)(size_t count) = [](size_t count) { return std::unique_ptr<T[]>(new T[count]); }
+	) {
 		const auto array = object->getArray(array_name);
 		CollectionType data = make_collection(array->size());
 
 		for (auto i = 0u; i < array->size(); ++i) {
 			const auto& t = array->getObject(i);
+			data[i] = make_t(t);
+		}
+		return data;
+	}
+
+	template <typename T, typename CollectionType = std::unique_ptr<T[]>>
+	CollectionType parse_array(
+		Poco::SharedPtr<Poco::JSON::Object> object,
+		const char* const array_name,
+		T(*make_t)(const Poco::Dynamic::Var& node),
+		CollectionType(*make_collection)(size_t count) = [](size_t count) { return std::unique_ptr<T[]>(new T[count]); }
+	) {
+		const auto array = object->getArray(array_name);
+		CollectionType data = make_collection(array->size());
+
+		for (auto i = 0u; i < array->size(); ++i) {
+			const auto& t = array->get(0);
 			data[i] = make_t(t);
 		}
 		return data;
