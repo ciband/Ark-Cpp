@@ -31,10 +31,10 @@ public:
 	Status() = default;
 
     Status(
-        const char* const l,
+        bool l,
         int n,
         const char* const bc
-    ) : loaded_(strcmp(l, "true") == 0), now_(n), blocksCount_() {
+    ) : loaded_(l), now_(n), blocksCount_() {
         strncpy(blocksCount_, bc, sizeof(blocksCount_) / sizeof(blocksCount_[0]));
     }
 
@@ -68,11 +68,11 @@ public:
 	Sync() = default;
 
     Sync(
-        const char* s,
+        bool s,
         int b,
         const char* const h,
         const char* const i
-    ) : syncing_(strcmp(s, "true") == 0), blocks_(b), height_(), id_() {
+    ) : syncing_(s), blocks_(b), height_(), id_() {
         strncpy(height_, h, sizeof(height_) / sizeof(height_[0]));
         strncpy(id_, i, sizeof(id_) / sizeof(id_[0]));
     }

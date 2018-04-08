@@ -291,8 +291,6 @@ public:
 	// /api/delegates/getNextForgers
 	ARK::API::Delegate::Respondable::NextForgers delegates_getNextForgers_fromJSON(const char* const json_str) {
 		auto object = parse(json_str);
-		//const auto delegates = object->get("delegates");
-		//auto delegates_object = delegates.extract<Poco::JSON::Object::Ptr>();
 		auto delegates = parse_array<Publickey>(
 			object, 
 			"delegates",
@@ -309,47 +307,45 @@ public:
 
 	// /api/loader/status
 	ARK::API::Loader::Respondable::Status loader_status_fromJSON(const char* const json_str) override {
-		/*auto jString = ARK::Utilities::makejson_string(json_str);
-
-    return ARK::API::Loader::Respondable::Status(
-        jString->valueFor("loaded").c_str(),
-        convert_to_int(jString->valueFor("now")),
-        jString->valueFor("blocksCount").c_str()
-    );*/
-		return ARK::API::Loader::Respondable::Status();
+		const auto object = parse(json_str);
+		return ARK::API::Loader::Respondable::Status(
+			object->getValue<bool>("loaded"),
+			object->getValue<int>("now"),
+			object->getValue<std::string>("blocksCount").c_str()
+		);
 	}
+
 	// /api/loader/status/sync
 	ARK::API::Loader::Respondable::Sync loader_status_sync_fromJSON(const char* const json_str) override {
-		/*
-		auto jString = ARK::Utilities::makejson_string(json_str);
-
-    return ARK::API::Loader::Respondable::Sync(
-        jString->valueFor("syncing").c_str(),
-        convert_to_int(jString->valueFor("blocks")),
-        jString->valueFor("height").c_str(),
-        jString->valueFor("id").c_str()
-    );*/
-		return ARK::API::Loader::Respondable::Sync();
+		const auto object = parse(json_str);
+		return ARK::API::Loader::Respondable::Sync(
+			object->getValue<bool>("syncing"),
+			object->getValue<int>("blocks"),
+			object->getValue<std::string>("height").c_str(),
+			object->getValue<std::string>("id").c_str()
+		);
 	}
+
 	// /api/loader/autoconfigure
 	ARK::Network loader_autoconfigure_fromJSON(const char* const json_str) override {
-		/*auto jString = ARK::Utilities::makejson_string(json_str);
-
-    return ARK::Network(
-        jString->valueIn("network", "nethash").c_str(),
-        jString->valueIn("network", "token").c_str(),
-        jString->valueIn("network", "symbol").c_str(),
-        jString->valueIn("network", "explorer").c_str(),
-        convert_to_int(jString->valueIn("network", "version"))
-    );
-*/
-		return ARK::Network();
+		auto object = parse(json_str);
+		const auto block = object->get("network");
+		object = block.extract<Poco::JSON::Object::Ptr>();
+		return ARK::Network(
+			object->getValue<std::string>("nethash").c_str(),
+			object->getValue<std::string>("token").c_str(),
+			object->getValue<std::string>("symbol").c_str(),
+			object->getValue<std::string>("explorer").c_str(),
+			object->getValue<int>("version")
+		);
 	}
+
 	// /api/multisignatures/pending
 	String multisignatures_pending_fromJSON(const char* const json_str) override {
 		/*auto jString = ARK::Utilities::makejson_string(json_str);
   
   return jString->valueFor("transactions");*/
+		// TODO
 		return "";
 	}
 
@@ -357,81 +353,74 @@ public:
 
 	// /api/peers/get
 	ARK::Peer peers_get_fromJSON(const char* const json_str) override {
-		/*auto jString = ARK::Utilities::makejson_string(json_str);
-
-    return ARK::Peer(
-        jString->valueIn("peer", "ip").c_str(),
-        convert_to_int(jString->valueIn("peer", "port")),
-        jString->valueIn("peer", "version").c_str(),
-        convert_to_int(jString->valueIn("peer", "errors")),
-        jString->valueIn("peer", "os").c_str(),
-        jString->valueIn("peer", "height").c_str(),
-        jString->valueIn("peer", "status").c_str(),
-        convert_to_int(jString->valueIn("peer", "delay"))
-    );*/
-		return ARK::Peer();
+		auto object = parse(json_str);
+		const auto block = object->get("peer");
+		object = block.extract<Poco::JSON::Object::Ptr>();
+		return ARK::Peer(
+			object->getValue<std::string>("ip").c_str(),
+			object->getValue<int>("port"),
+			object->getValue<std::string>("version").c_str(),
+			object->getValue<int>("errors"),
+			object->getValue<std::string>("os").c_str(),
+			object->getValue<std::string>("height").c_str(),
+			object->getValue<std::string>("status").c_str(),
+			object->getValue<int>("delay")
+		);		
 	}
+
 	// /api/peers
 	std::unique_ptr<ARK::Peer[]> peers_fromJSON(const char* const json_str) override {
-		//   auto jString = ARK::Utilities::makejson_string(json_str);
-		//   int peersCount = 10; // limited to 10
-		//   ARK::Peer::PeersResponse peersResponse(peersCount);
-		//   // for (int i = 0; i < peersCount; i++) {
-		//   //   ARK::Peer peer = {
-		//   //     jString->subarrayValueIn("peers", i, "ip"),
-		//   //     jString->subarrayValueIn("peers", i, "port").toInt(),
-		//   //     jString->subarrayValueIn("peers", i, "version"),
-		//   //     jString->subarrayValueIn("peers", i, "errors").toInt(),
-		//   //     jString->subarrayValueIn("peers", i, "os"),
-		//   //     jString->subarrayValueIn("peers", i, "height"),
-		//   //     jString->subarrayValueIn("peers", i, "status"),
-		//   //     jString->subarrayValueIn("peers", i, "delay").toInt()
-		//   //   };
-		//   //   peersResponse.list[i] = peer;
-		//   // };
-		//   return peersResponse;
-		return nullptr;
+		return parse_array<ARK::Peer>(json_str, "peers", [] (const Poco::JSON::Object::Ptr& peer) {
+			return ARK::Peer(
+				peer->getValue<std::string>("ip").c_str(),
+				peer->getValue<int>("port"),
+				peer->getValue<std::string>("version").c_str(),
+				peer->getValue<int>("errors"),
+				peer->getValue<std::string>("os").c_str(),
+				peer->getValue<std::string>("height").c_str(),
+				peer->getValue<std::string>("status").c_str(),
+				peer->getValue<int>("delay")
+			);
+		});
 	}
 
 	// /api/peers/version
 	ARK::API::Peer::Respondable::Version peers_version_fromJSON(const char* const json_str) override {
-		/*auto jString = ARK::Utilities::makejson_string(json_str);
-
-    return ARK::API::Peer::Respondable::Version(
-        jString->valueFor("version").c_str(),
-        jString->valueFor("build").c_str()
-    );*/
-		return ARK::API::Peer::Respondable::Version();
+		const auto object = parse(json_str);
+		return ARK::API::Peer::Respondable::Version(
+			object->getValue<std::string>("version").c_str(),
+			object->getValue<std::string>("build").c_str()
+		);
 	}
 
 	// /api/signatures_fee
 	Balance signatures_Fee_fromJSON(const char* const json_str) override {
-		/*auto jString = ARK::Utilities::makejson_string(json_str);
-
-  return Balance(jString->valueFor("fee").c_str());*/
-		return Balance();
+		const auto object = parse(json_str);
+		return Balance(object->getValue<std::string>("fee").c_str());
 	}
+
 	// /api/transactions/get
 	ARK::Transaction transactions_get_fromJSON(const char* const json_str) override {
-		/*auto jString = ARK::Utilities::makejson_string(json_str); 
-
-    return ARK::Transaction(
-        jString->valueIn("transaction", "id").c_str(),
-        jString->valueIn("transaction", "blockid").c_str(),
-        jString->valueIn("transaction", "height").c_str(),
-        convert_to_int(jString->valueIn("transaction", "type")),
-        jString->valueIn("transaction", "timestamp").c_str(),
-        jString->valueIn("transaction", "amount").c_str(),
-        jString->valueIn("transaction", "fee").c_str(),
-        jString->valueIn("transaction", "vendorField").c_str(),
-        jString->valueIn("transaction", "senderId").c_str(),
-        jString->valueIn("transaction", "recipientId").c_str(),
-        jString->valueIn("transaction", "senderPublicKey").c_str(),
-        jString->valueIn("transaction", "signature").c_str(),
-        jString->valueIn("transaction", "confirmations").c_str()
-    );*/
-		return ARK::Transaction();
+		auto object = parse(json_str);
+		const auto block = object->get("transaction");
+		object = block.extract<Poco::JSON::Object::Ptr>();
+		return ARK::Transaction(
+			object->getValue<std::string>("id").c_str(),
+			object->getValue<std::string>("blockid").c_str(),
+			object->getValue<std::string>("height").c_str(),
+			object->getValue<int>("type"),
+			object->getValue<std::string>("timestamp").c_str(),
+			object->getValue<std::string>("amount").c_str(),
+			object->getValue<std::string>("fee").c_str(),
+			object->getValue<std::string>("senderId").c_str(),
+			object->getValue<std::string>("recipientId").c_str(),
+			object->getValue<std::string>("senderPublicKey").c_str(),
+			object->getValue<std::string>("signature").c_str(),
+			object->getValue<std::string>("confirmations").c_str(),
+			object->optValue<std::string>("vendorField", std::string()).c_str()
+		);
 	}
+
 	// /api/transactions
 	std::unique_ptr<ARK::Transaction[]> transactions_fromJSON(const char* const json_str) {
 		/*//   auto jString = ARK::Utilities::makejson_string(json_str); 
@@ -565,24 +554,7 @@ private:
 		return json.extract<Poco::JSON::Object::Ptr>();
 	}
 
-	/*template <typename T>
-	std::unique_ptr<T[]> parse_array(
-		const char* const json_str, 
-		const char* const array_name, 
-		T (*make_t)(const Poco::JSON::Object::Ptr& node)
-	) {
-		const auto object = parse(json_str);
-		const auto array = object->getArray(array_name);
-		std::unique_ptr<T[]> data(new T[array->size()]);
-
-		for (auto i = 0u; i < array->size(); ++i) {
-			const auto& t = array->getObject(i);
-			data[i] = make_t(t);
-		}
-		return data;
-	}*/
-
-	// helper function parse JSON array and create model data either in a dynamic array or in an array-like class
+	// helper functions to parse JSON array and create model data either in a dynamic array or in an array-like class
 	// TODO:  could add concept-like or enable-if checking for template types to enforce interface
 	template <typename T, typename CollectionType = std::unique_ptr<T[]>>
 	CollectionType parse_array(
@@ -595,6 +567,7 @@ private:
 		return parse_array(object, array_name, make_t, make_collection);
 	}
 
+	// used to return an array of objects
 	template <typename T, typename CollectionType = std::unique_ptr<T[]>>
 	CollectionType parse_array(
 		Poco::SharedPtr<Poco::JSON::Object> object,
@@ -612,6 +585,7 @@ private:
 		return data;
 	}
 
+	// used to return an array of simple data types
 	template <typename T, typename CollectionType = std::unique_ptr<T[]>>
 	CollectionType parse_array(
 		Poco::SharedPtr<Poco::JSON::Object> object,

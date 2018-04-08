@@ -1,4 +1,4 @@
-#include "gtest/gtest.h"
+﻿#include "gtest/gtest.h"
 
 #include "utilities/json.h"
 
@@ -639,42 +639,223 @@ TEST(json, delegates_getNextForgers) {
 		"03cefbfa0c1c853084591b62a9aad0116029eaebdc27c2e3b811b1b0aebb928fc6"
 	};
 
-	ASSERT_EQ(delegates, next_forgers.delegate_keys());  
+	//ASSERT_EQ(delegates, next_forgers.delegate_keys()); //std::array operator== broken on VS2017? 
+	const auto& next_forgers_delegates = next_forgers.delegate_keys();
+	for (auto i = 0u; i < delegates.size(); ++i) {
+		ASSERT_EQ(delegates[0], next_forgers_delegates[i]);
+	}
 }
 
 // Loader
 TEST(json, loader_status) {
+	static const auto json_str =
+	"{"
+		"\"success\": true,"
+		"\"loaded\" : false,"
+		"\"now\" : 3504223,"
+		"\"blocksCount\" : 5"
+	"}";
+
+	const auto status = ARK::Utilities::get_json_interface().loader_status_fromJSON(json_str);
+	ASSERT_FALSE(status.loaded());
+	ASSERT_EQ(3504223, status.now());
+	ASSERT_STREQ("5", status.blocks_count());
 }
 
 TEST(json, loader_status_sync) {
+	static const auto json_str =
+	"{"
+		"\"success\": true,"
+		"\"syncing\" : false,"
+		"\"blocks\" : 0,"
+		"\"height\" : 4076535,"
+		"\"id\" : 10821017690376498361"
+	"}";
+
+	const auto sync = ARK::Utilities::get_json_interface().loader_status_sync_fromJSON(json_str);
+	ASSERT_FALSE(sync.syncing());
+	ASSERT_EQ(0, sync.blocks()); 
+	ASSERT_STREQ("4076535", sync.height());
+	ASSERT_STREQ("10821017690376498361", sync.id());
 }
 
 TEST(json, loader_autoconfigure) {
+	static const auto ark_symbol = u8"Ѧ";
+
+	static const auto json_str = 
+	"{"
+		"\"success\": true,"
+		"\"network\": {"
+			"\"nethash\": \"6e84d08bd299ed97c212c886c98a57e36545c8f5d645ca7eeae63a8bd62d8988\","
+			"\"token\": \"ARK\","
+			u8"\"symbol\": \"Ѧ\","
+			"\"explorer\": \"https://explorer.ark.io\","
+			"\"version\": 23"
+		"}"
+	"}";
+
+	const auto configure = ARK::Utilities::get_json_interface().loader_autoconfigure_fromJSON(json_str);
+	ASSERT_STREQ("6e84d08bd299ed97c212c886c98a57e36545c8f5d645ca7eeae63a8bd62d8988", configure.nethash());
+	ASSERT_STREQ("ARK", configure.token());
+	ASSERT_STREQ(ark_symbol, configure.symbol());
+	ASSERT_STREQ("https://explorer.ark.io", configure.explorer());
+	ASSERT_EQ(23, configure.version());
 }
 
 // MultiSignature
 TEST(json, multisignatures_pending) {
+	static const auto json_str =
+	"{"
+		"\"success\": true,"
+		"\"transactions\" : ["
+				//TODO:  Is this an array of transactions or just ids
+		"]"
+	"}";
 }
 
 TEST(json, multisignatures_accounts) {
+	// TODO
 }
 
 // Peer
 TEST(json, peers_get) {
+	static const auto json_str = 
+	"{"
+		"\"success\": true,"
+		"\"peer\": {"
+			"\"ip\": \"5.39.9.240\","
+			"\"port\": 4001,"
+			"\"version\": \"1.0.2\","
+			"\"errors\": 0,"
+			"\"os\": \"linux4.4.0-104-generic\","
+			"\"height\": 4076739,"
+			"\"status\": \"OK\","
+			"\"delay\": 104"
+		"}"
+	"}";
+
+	const auto peer = ARK::Utilities::get_json_interface().peers_get_fromJSON(json_str);
+	ASSERT_STREQ("5.39.9.240", peer.ip());
+	ASSERT_EQ(4001, peer.port());
+	ASSERT_STREQ("1.0.2", peer.version());
+	ASSERT_EQ(0, peer.errors());
+	ASSERT_STREQ("linux4.4.0-104-generic", peer.os());
+	ASSERT_STREQ("4076739", peer.height());
+	ASSERT_STREQ("OK", peer.status());
+	ASSERT_EQ(104, peer.delay());
 }
 
 TEST(json, peers) {
+	static const auto json_str =
+	"{"
+		"\"success\": true,"
+		"\"peers\" : ["
+		"{"
+			"\"ip\": \"5.39.9.241\","
+			"\"port\": 4002,"
+			"\"version\": \"1.0.3\","
+			"\"errors\": 1,"
+			"\"os\": \"linux4.4.0-105-generic\","
+			"\"height\": 4076730,"
+			"\"status\": \"OK\","
+			"\"delay\": 105"
+		"},"
+		"{"
+			"\"ip\": \"5.39.9.240\","
+			"\"port\": 4001,"
+			"\"version\": \"1.0.2\","
+			"\"errors\": 0,"
+			"\"os\": \"linux4.4.0-104-generic\","
+			"\"height\": 4076739,"
+			"\"status\": \"OK\","
+			"\"delay\": 104"
+		"}"
+		"]"
+	"}";
+	
+	const auto peers = ARK::Utilities::get_json_interface().peers_fromJSON(json_str);
+	ASSERT_STREQ("5.39.9.241", peers[0].ip());
+	ASSERT_EQ(4002, peers[0].port());
+	ASSERT_STREQ("1.0.3", peers[0].version());
+	ASSERT_EQ(1, peers[0].errors());
+	ASSERT_STREQ("linux4.4.0-105-generic", peers[0].os());
+	ASSERT_STREQ("4076730", peers[0].height());
+	ASSERT_STREQ("OK", peers[0].status());
+	ASSERT_EQ(105, peers[0].delay());
+
+	ASSERT_STREQ("5.39.9.240", peers[1].ip());
+	ASSERT_EQ(4001, peers[1].port());
+	ASSERT_STREQ("1.0.2", peers[1].version());
+	ASSERT_EQ(0, peers[1].errors());
+	ASSERT_STREQ("linux4.4.0-104-generic", peers[1].os());
+	ASSERT_STREQ("4076739", peers[1].height());
+	ASSERT_STREQ("OK", peers[1].status());
+	ASSERT_EQ(104, peers[1].delay());
 }
 
 TEST(json, peers_version) {
+	static const auto json_str =
+	"{"
+		"\"success\": true,"
+		"\"version\" : \"1.0.2\","
+		"\"build\" : \"\""
+	"}";
+
+	const auto version = ARK::Utilities::get_json_interface().peers_version_fromJSON(json_str);
+	ASSERT_STREQ("1.0.2", version.version());
+	ASSERT_STREQ("", version.build());
 }
 
 // Signature
 TEST(json, signatures_fee) {
+	static const auto json_str =
+	"{"
+		"\"success\": true,"
+		"\"fee\" : 10000000"
+	"}";
+
+	const auto signatures_fee = ARK::Utilities::get_json_interface().signatures_Fee_fromJSON(json_str);
+	ASSERT_STREQ(".10000000", signatures_fee.ark());
+	ASSERT_STREQ("10000000", signatures_fee.arktoshi());
 }
 
 // Transaction
 TEST(json, transactions_get) {
+	static const auto json_str = 
+	"{"
+		"\"success\": true,"
+		"\"transaction\": {"
+			"\"id\": \"848de8c02eedd8d8fd735c8559547a8c8538d78f9b5a16b14794fa4fb9f1db4c\","
+			"\"blockid\": 14331232031547364591,"
+			"\"height\": 3858637,"
+			"\"type\": 0,"
+			"\"timestamp\": 31288719,"
+			"\"amount\": 49990000000,"
+			"\"fee\": 10000000,"
+			"\"senderId\": \"AQf97MEVnnJSYsJHfcrLTGH5J4GYSB5dLH\","
+			"\"recipientId\": \"AZwAnbjeoxcLcJWK1RJTy4mrR39vRcTbq1\","
+			"\"senderPublicKey\": \"02579b22787db8a7cb838729ad21bb0471e472027904df3d674ef074006a9a22c0\","
+			"\"signature\": \"30450221009f54aa75efc66cd2209379827f7c226fc90b5a1a6eb13ae4fb53e0621958f3c7022053fcce77dd82b3090e41473bdba7d2f69bc56563b076c9019f5e527df52815f3\","
+			"\"asset\": {},"
+			"\"confirmations\": 218439"
+		"}"
+	"}";
+
+	const auto transaction = ARK::Utilities::get_json_interface().transactions_get_fromJSON(json_str);
+	ASSERT_STREQ("848de8c02eedd8d8fd735c8559547a8c8538d78f9b5a16b14794fa4fb9f1db4c", transaction.id());
+	ASSERT_STREQ("14331232031547364591", transaction.block_id());
+	ASSERT_STREQ("3858637", transaction.height());
+	ASSERT_EQ(0, transaction.type());
+	ASSERT_STREQ("31288719", transaction.timestamp());
+	ASSERT_STREQ("49990000000", transaction.amount().arktoshi());
+	ASSERT_STREQ("10000000", transaction.fee().arktoshi());
+	ASSERT_STREQ("AQf97MEVnnJSYsJHfcrLTGH5J4GYSB5dLH", transaction.sender_id().getValue());
+	ASSERT_STREQ("AZwAnbjeoxcLcJWK1RJTy4mrR39vRcTbq1", transaction.recipient_id().getValue());	
+	ASSERT_STREQ("02579b22787db8a7cb838729ad21bb0471e472027904df3d674ef074006a9a22c0", transaction.sender_publickey().getValue());
+	ASSERT_STREQ("30450221009f54aa75efc66cd2209379827f7c226fc90b5a1a6eb13ae4fb53e0621958f3c7022053fcce77dd82b3090e41473bdba7d2f69bc56563b076c9019f5e527df52815f3", transaction.signature());
+	ASSERT_STREQ("218439", transaction.confirmations());
+
+	//ASSERT_STREQ("", transaction.vendor_field());
 }
 
 TEST(json, transactions) {

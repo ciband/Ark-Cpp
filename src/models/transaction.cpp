@@ -13,12 +13,12 @@ Transaction::Transaction(
     const char* const ts,
     const char* const a,
     const char* const f,
-    const char* const vf,
     const char* const si,
     const char* const ri,
     const char* const spk,
     const char* const s,
-    const char* const c
+    const char* const c,
+	const char* const vf /* = nullptr */
 ) :
     id_(),
     blockid_(),
@@ -27,20 +27,22 @@ Transaction::Transaction(
     timestamp_(),
     amount_(a),
     fee_(f),
-    vendorField_(),
     senderId_(si),
     recipientId_(ri),
     senderPublicKey_(spk),
     signature_(),
-    confirmations_()
+    confirmations_(),
+	vendorField_()
 {
     strncpy(id_, i, sizeof(id_) / sizeof(id_[0]));
     strncpy(blockid_, b, sizeof(blockid_) / sizeof(blockid_[0]));
     strncpy(height_, h, sizeof(height_) / sizeof(height_[0]));
     strncpy(timestamp_, ts, sizeof(timestamp_) / sizeof(timestamp_[0]));
-    strncpy(vendorField_, vf, sizeof(vendorField_) / sizeof(vendorField_[0]));
     strncpy(signature_, s, sizeof(signature_) / sizeof(signature_[0]));
     strncpy(confirmations_, c, sizeof(confirmations_) / sizeof(confirmations_[0]));
+	if (vf != nullptr) {
+		strncpy(vendorField_, vf, sizeof(vendorField_) / sizeof(vendorField_[0]));
+	}
 }
 
 
