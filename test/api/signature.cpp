@@ -18,7 +18,7 @@ TEST(api, test_signature) {
 
 
 	/*  ==================================  */
-	ASSERT_STREQ("[]", _arkManager.multisignaturesPending(darkPubkey).c_str());
+	ASSERT_STREQ("", _arkManager.multisignaturesPending(darkPubkey).c_str());
 
 	/*  ==================================  */
 	/*  ==================================  */

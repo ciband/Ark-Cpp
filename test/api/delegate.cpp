@@ -17,14 +17,14 @@ TEST(api, test_delegates_count) {
 TEST(api, test_delegates_search) {
 	ARK::API::Manager _arkManager(ARK::Constants::Networks::Devnet::model);
 	const auto search = _arkManager.delegateSearch("sleepdeficit");
-	ASSERT_STREQ("sleepdeficit", search.username());
-	ASSERT_STREQ("DHQ4Fjsyiop3qBR4otAjAu6cBHkgRELqGA", search.address().getValue());
-	ASSERT_STREQ("0275776018638e5c40f1b922901e96cac2caa734585ef302b4a2801ee9a338a456", search.public_key().getValue());
-	const auto& vote = search.vote();
+	ASSERT_STREQ("sleepdeficit", search[0].username());
+	ASSERT_STREQ("DHQ4Fjsyiop3qBR4otAjAu6cBHkgRELqGA", search[0].address().getValue());
+	ASSERT_STREQ("0275776018638e5c40f1b922901e96cac2caa734585ef302b4a2801ee9a338a456", search[0].public_key().getValue());
+	const auto& vote = search[0].vote();
 	ASSERT_STRNE("0.0", vote.ark());
 	ASSERT_STRNE("0", vote.arktoshi());
-	ASSERT_NE(0, search.produced_blocks());
-	ASSERT_NE(0, search.missed_blocks());
+	ASSERT_NE(0, search[0].produced_blocks());
+	ASSERT_NE(0, search[0].missed_blocks());
 }
 
 TEST(api, test_delegate_voters) {

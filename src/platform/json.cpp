@@ -156,7 +156,9 @@ public:
 
 	// /api/blocks/getFees
 	ARK::Fees blocks_getFees_fromJSON(const char* const json_str) override {
-		const auto object = parse(json_str);
+		auto object = parse(json_str);
+		const auto fees = object->get("fees");
+		object = fees.extract<Poco::JSON::Object::Ptr>();
 		return ARK::Fees(
 			object->getValue<std::string>("send").c_str(),
 			object->getValue<std::string>("vote").c_str(),
@@ -423,59 +425,23 @@ public:
 
 	// /api/transactions
 	std::unique_ptr<ARK::Transaction[]> transactions_fromJSON(const char* const json_str) {
-		/*//   auto jString = ARK::Utilities::makejson_string(json_str); 
-//   // ARK::Transaction transactions[50];
-//   String resp;
-//   for (int i = 0; i < 50; i++) {
-//     String transactionSubstring = jString->subvalueFor("transactions", i);
-//     ARK::Utilities::JSONInterface transactionJString(transactionSubstring); 
-//     ARK::Transaction transaction = {
-//       transactionjString->valueFor("id"),
-//       transactionjString->valueFor("blockid"),
-//       transactionjString->valueFor("height"),
-//       transactionjString->valueFor("type").toInt(),
-//       transactionjString->valueFor("timestamp"),
-//       transactionjString->valueFor("amount"),
-//       transactionjString->valueFor("fee"),
-//       transactionjString->valueFor("vendorField"),
-//       transactionjString->valueFor("senderId"),
-//       transactionjString->valueFor("recipientId"),
-//       transactionjString->valueFor("senderPublicKey"),
-//       transactionjString->valueFor("signature"),
-//       transactionjString->valueFor("confirmations")
-//     };
-//     // String transactionSubstring = jString->subvalueFor(transaction, i);
-//     // ARK::Utilities::JSONInterface transactionJString(transactionSubstring); 
-//     // ARK::Transaction transaction = {
-//     //   jString->subarrayValueIn("transactions", i, "id"),
-//     //   jString->subarrayValueIn("transactions", i, "blockid"),
-//     //   jString->subarrayValueIn("transactions", i, "height"),
-//     //   jString->subarrayValueIn("transactions", i, "type").toInt(),
-//     //   jString->subarrayValueIn("transactions", i, "timestamp"),
-//     //   jString->subarrayValueIn("transactions", i, "amount"),
-//     //   jString->subarrayValueIn("transactions", i, "fee"),
-//     //   jString->subarrayValueIn("transactions", i, "vendorField"),
-//     //   jString->subarrayValueIn("transactions", i, "senderId"),
-//     //   jString->subarrayValueIn("transactions", i, "recipientId"),
-//     //   jString->subarrayValueIn("transactions", i, "senderPublicKey"),
-//     //   jString->subarrayValueIn("transactions", i, "signature"),
-//     //   jString->subarrayValueIn("transactions", i, "confirmations")
-//     // };
-//     // transactions[i] = transaction;
-//     resp += "transaction ";
-//     resp += i + 1;
-//     resp += ":\n";
-//     resp += transaction.description();
-//   };
-//   // for (int i = 0; i < 50; i++) {
-//   //   resp += "transaction ";
-//   //   resp += i + 1;
-//   //   resp += ":\n";
-//   //   resp += transactions[i].description();
-//   // };
-//   resp += "\n";
-//   return resp;*/
-		return nullptr;
+		return parse_array<ARK::Transaction>(json_str, "transactions", [](const Poco::JSON::Object::Ptr& transaction) {
+			return ARK::Transaction(
+				transaction->getValue<std::string>("id").c_str(),
+				transaction->getValue<std::string>("blockid").c_str(),
+				transaction->getValue<std::string>("height").c_str(),
+				transaction->getValue<int>("type"),
+				transaction->getValue<std::string>("timestamp").c_str(),
+				transaction->getValue<std::string>("amount").c_str(),
+				transaction->getValue<std::string>("fee").c_str(),
+				transaction->getValue<std::string>("senderId").c_str(),
+				transaction->getValue<std::string>("recipientId").c_str(),
+				transaction->getValue<std::string>("senderPublicKey").c_str(),
+				transaction->getValue<std::string>("signature").c_str(),
+				transaction->getValue<std::string>("confirmations").c_str(),
+				transaction->optValue<std::string>("vendorField", std::string()).c_str()
+			);
+		});
 	}
 	// api/transactions/unconfirmed/get
 	ARK::API::Transaction::Respondable::Unconfirmed transactions_unconfirmed_get_fromJSON(const char* const json_str) override {

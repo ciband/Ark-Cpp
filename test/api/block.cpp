@@ -53,8 +53,8 @@ TEST(api, test_block_fees) {
 	const auto fees = _arkManager.blockFees();
 	ASSERT_STREQ("10000000", fees.send().arktoshi());
 	ASSERT_STREQ("100000000", fees.vote().arktoshi());
-	ASSERT_STREQ("500000000", fees.delegate().arktoshi());
-	ASSERT_STREQ("2500000000", fees.second_signature().arktoshi());
+	ASSERT_STREQ("2500000000", fees.delegate().arktoshi());
+	ASSERT_STREQ("500000000", fees.second_signature().arktoshi());
 	ASSERT_STREQ("500000000", fees.multi_signature().arktoshi());
 }
 
@@ -72,7 +72,7 @@ TEST(api, test_block_reward) {
 
 TEST(api, test_block_supply) {
 	ARK::API::Manager _arkManager(ARK::Constants::Networks::Devnet::model);
-	/*  ==================================  */
+	
 	const auto block_supply = _arkManager.blockSupply();
 	ASSERT_STRNE("0.0", block_supply.ark());
 	ASSERT_STRNE("0", block_supply.arktoshi());

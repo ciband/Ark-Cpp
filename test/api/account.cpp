@@ -47,7 +47,7 @@ TEST(api, test_account_delegates) {
 	ASSERT_NE(0.0, delegate[0].productivity());
 }
 
-TEST(api, test_account) {
+TEST(api, test_account_get) {
 	ARK::API::Manager arkManager(ARK::Constants::Networks::Devnet::model);	
 	const auto account = arkManager.account(darkAddress);
 	ASSERT_STREQ("DHQ4Fjsyiop3qBR4otAjAu6cBHkgRELqGA", account[0].address().getValue());

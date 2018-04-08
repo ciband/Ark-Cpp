@@ -351,11 +351,14 @@ TEST(json, blocks_getFees) {
 	static const auto json_str =
 	"{"
 		"\"success\": true,"
-		"\"send\" : 10000000,"
-		"\"vote\" : 100000000,"
-		"\"secondsignature\" : 2500000000,"
-		"\"delegate\" : 500000000,"
-		"\"multisignature\" : 500000000"
+		"\"fees\":"
+		"{"
+			"\"send\" : 10000000,"
+			"\"vote\" : 100000000,"
+			"\"secondsignature\" : 2500000000,"
+			"\"delegate\" : 500000000,"
+			"\"multisignature\" : 500000000"
+		"}"
 	"}";
 
 	const auto fees = ARK::Utilities::get_json_interface().blocks_getFees_fromJSON(json_str);
@@ -859,12 +862,78 @@ TEST(json, transactions_get) {
 }
 
 TEST(json, transactions) {
+	static const auto json_str =
+	"{"
+		"\"success\": true,"
+		"\"transactions\" : ["
+		"{"
+			"\"id\": \"848de8c02eedd8d8fd735c8559547a8c8538d78f9b5a16b14794fa4fb9f1db4c\","
+			"\"blockid\": 14331232031547364591,"
+			"\"height\": 3858637,"
+			"\"type\": 0,"
+			"\"timestamp\": 31288719,"
+			"\"amount\": 49990000000,"
+			"\"fee\": 10000000,"
+			"\"senderId\": \"AQf97MEVnnJSYsJHfcrLTGH5J4GYSB5dLH\","
+			"\"recipientId\": \"AZwAnbjeoxcLcJWK1RJTy4mrR39vRcTbq1\","
+			"\"senderPublicKey\": \"02579b22787db8a7cb838729ad21bb0471e472027904df3d674ef074006a9a22c0\","
+			"\"signature\": \"30450221009f54aa75efc66cd2209379827f7c226fc90b5a1a6eb13ae4fb53e0621958f3c7022053fcce77dd82b3090e41473bdba7d2f69bc56563b076c9019f5e527df52815f3\","
+			"\"asset\": {},"
+			"\"confirmations\": 218439"
+		"},"
+		"{"
+			"\"id\": \"848de8c02eedd8d8fd735c8559547a8c8538d78f9b5a16b14794fa4fb9f1db4d\","
+			"\"blockid\": 14331232031547364592,"
+			"\"height\": 3858638,"
+			"\"type\": 0,"
+			"\"timestamp\": 31288710,"
+			"\"amount\": 49990000001,"
+			"\"fee\": 10000001,"
+			"\"senderId\": \"AQf97MEVnnJSYsJHfcrLTGH5J4GYSB5dLI\","
+			"\"recipientId\": \"AZwAnbjeoxcLcJWK1RJTy4mrR39vRcTbq2\","
+			"\"senderPublicKey\": \"02579b22787db8a7cb838729ad21bb0471e472027904df3d674ef074006a9a22c1\","
+			"\"signature\": \"30450221009f54aa75efc66cd2209379827f7c226fc90b5a1a6eb13ae4fb53e0621958f3c7022053fcce77dd82b3090e41473bdba7d2f69bc56563b076c9019f5e527df52815f4\","
+			"\"asset\": {},"
+			"\"confirmations\": 218430"
+		"}"
+		"]"
+	"}";
+
+	const auto transactions = ARK::Utilities::get_json_interface().transactions_fromJSON(json_str);
+
+	ASSERT_STREQ("848de8c02eedd8d8fd735c8559547a8c8538d78f9b5a16b14794fa4fb9f1db4c", transactions[0].id());
+	ASSERT_STREQ("14331232031547364591", transactions[0].block_id());
+	ASSERT_STREQ("3858637", transactions[0].height());
+	ASSERT_EQ(0, transactions[0].type());
+	ASSERT_STREQ("31288719", transactions[0].timestamp());
+	ASSERT_STREQ("49990000000", transactions[0].amount().arktoshi());
+	ASSERT_STREQ("10000000", transactions[0].fee().arktoshi());
+	ASSERT_STREQ("AQf97MEVnnJSYsJHfcrLTGH5J4GYSB5dLH", transactions[0].sender_id().getValue());
+	ASSERT_STREQ("AZwAnbjeoxcLcJWK1RJTy4mrR39vRcTbq1", transactions[0].recipient_id().getValue());
+	ASSERT_STREQ("02579b22787db8a7cb838729ad21bb0471e472027904df3d674ef074006a9a22c0", transactions[0].sender_publickey().getValue());
+	ASSERT_STREQ("30450221009f54aa75efc66cd2209379827f7c226fc90b5a1a6eb13ae4fb53e0621958f3c7022053fcce77dd82b3090e41473bdba7d2f69bc56563b076c9019f5e527df52815f3", transactions[0].signature());
+	ASSERT_STREQ("218439", transactions[0].confirmations());
+
+	ASSERT_STREQ("848de8c02eedd8d8fd735c8559547a8c8538d78f9b5a16b14794fa4fb9f1db4d", transactions[1].id());
+	ASSERT_STREQ("14331232031547364592", transactions[1].block_id());
+	ASSERT_STREQ("3858638", transactions[1].height());
+	ASSERT_EQ(0, transactions[1].type());
+	ASSERT_STREQ("31288710", transactions[1].timestamp());
+	ASSERT_STREQ("49990000001", transactions[1].amount().arktoshi());
+	ASSERT_STREQ("10000001", transactions[1].fee().arktoshi());
+	ASSERT_STREQ("AQf97MEVnnJSYsJHfcrLTGH5J4GYSB5dLI", transactions[1].sender_id().getValue());
+	ASSERT_STREQ("AZwAnbjeoxcLcJWK1RJTy4mrR39vRcTbq2", transactions[1].recipient_id().getValue());
+	ASSERT_STREQ("02579b22787db8a7cb838729ad21bb0471e472027904df3d674ef074006a9a22c1", transactions[1].sender_publickey().getValue());
+	ASSERT_STREQ("30450221009f54aa75efc66cd2209379827f7c226fc90b5a1a6eb13ae4fb53e0621958f3c7022053fcce77dd82b3090e41473bdba7d2f69bc56563b076c9019f5e527df52815f4", transactions[1].signature());
+	ASSERT_STREQ("218430", transactions[1].confirmations());
 }
 
 TEST(json, transactions_unconfired_get) {
+	//TODO
 }
 
 TEST(json, transactions_unconfirmed) {
+	//TODO
 }
 
 // Transport

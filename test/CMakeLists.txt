@@ -17,27 +17,27 @@ include_directories(${PROJECT_SOURCE_DIR}/../src)
 include_directories(${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
 
 set (TEST_SRC
-#	${PROJECT_SOURCE_DIR}/api/account.cpp
-#	${PROJECT_SOURCE_DIR}/api/block.cpp
-#	${PROJECT_SOURCE_DIR}/api/delegate.cpp
-#	${PROJECT_SOURCE_DIR}/api/loader.cpp
-#	${PROJECT_SOURCE_DIR}/api/peer.cpp
-#	${PROJECT_SOURCE_DIR}/api/signature.cpp
-#	${PROJECT_SOURCE_DIR}/api/transaction.cpp	
-#	${PROJECT_SOURCE_DIR}/model/account.cpp
-#	${PROJECT_SOURCE_DIR}/model/block.cpp
-#	${PROJECT_SOURCE_DIR}/model/currency.cpp
-#	${PROJECT_SOURCE_DIR}/model/delegate.cpp
-#	${PROJECT_SOURCE_DIR}/model/fees.cpp
-#	${PROJECT_SOURCE_DIR}/model/network.cpp
-#	${PROJECT_SOURCE_DIR}/model/peer.cpp
-#	${PROJECT_SOURCE_DIR}/model/transaction.cpp
-#	${PROJECT_SOURCE_DIR}/model/voter.cpp
-#	${PROJECT_SOURCE_DIR}/types/address.cpp
-#	${PROJECT_SOURCE_DIR}/types/balance.cpp
-#	${PROJECT_SOURCE_DIR}/types/hash.cpp
-#	${PROJECT_SOURCE_DIR}/types/publickey.cpp
-#	${PROJECT_SOURCE_DIR}/types/signature.cpp
+	${PROJECT_SOURCE_DIR}/api/account.cpp
+	${PROJECT_SOURCE_DIR}/api/block.cpp
+	${PROJECT_SOURCE_DIR}/api/delegate.cpp
+	${PROJECT_SOURCE_DIR}/api/loader.cpp
+	${PROJECT_SOURCE_DIR}/api/peer.cpp
+	${PROJECT_SOURCE_DIR}/api/signature.cpp
+	${PROJECT_SOURCE_DIR}/api/transaction.cpp	
+	${PROJECT_SOURCE_DIR}/model/account.cpp
+	${PROJECT_SOURCE_DIR}/model/block.cpp
+	${PROJECT_SOURCE_DIR}/model/currency.cpp
+	${PROJECT_SOURCE_DIR}/model/delegate.cpp
+	${PROJECT_SOURCE_DIR}/model/fees.cpp
+	${PROJECT_SOURCE_DIR}/model/network.cpp
+	${PROJECT_SOURCE_DIR}/model/peer.cpp
+	${PROJECT_SOURCE_DIR}/model/transaction.cpp
+	${PROJECT_SOURCE_DIR}/model/voter.cpp
+	${PROJECT_SOURCE_DIR}/types/address.cpp
+	${PROJECT_SOURCE_DIR}/types/balance.cpp
+	${PROJECT_SOURCE_DIR}/types/hash.cpp
+	${PROJECT_SOURCE_DIR}/types/publickey.cpp
+	${PROJECT_SOURCE_DIR}/types/signature.cpp
 	${PROJECT_SOURCE_DIR}/utilities/json.cpp
 )
 
