@@ -44,7 +44,7 @@ public:
 	// /api/accounts/delegates
 	virtual std::unique_ptr<ARK::Delegate[]> accounts_delegates_fromJSON(const char* const json_str) = 0;
 	// /api/accounts
-	virtual std::unique_ptr<ARK::Account[]> accounts_fromJSON(const char* const json_str) = 0;
+	virtual ARK::Account accounts_fromJSON(const char* const json_str) = 0;
 
 	//TODO: /api/accounts/top 
 

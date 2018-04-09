@@ -69,7 +69,7 @@ class Gettable
 		*	ARK::API::Account::Gettable::account
 		*		/api/accounts?address=arkAddress 
 		**************************************************/
-	std::unique_ptr<ARK::Account[]> account(
+	ARK::Account account(
         ARK::Utilities::Network::Connector& netManager,
         const Address& arkAddress);
 

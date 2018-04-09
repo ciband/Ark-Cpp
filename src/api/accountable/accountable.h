@@ -102,7 +102,7 @@ class Accountable : public API::Account::Gettable, virtual ARK::Utilities::Netwo
 	*
 	*   @brief:	Uses Ark Address to get Account Object from a Node via API.
 	**************************************************/
-		std::unique_ptr<ARK::Account[]> account(const Address& _arkAddress) {
+		ARK::Account account(const Address& _arkAddress) {
 			return ARK::API::Account::Gettable::account(this->netConnector, _arkAddress);
 		};
 /*  ==========================================================================  */

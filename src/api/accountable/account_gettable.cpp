@@ -89,7 +89,7 @@ std::unique_ptr<ARK::Delegate[]> ARK::API::Account::Gettable::delegates(
 /*  ====================================  */
 /*  ARK::API::Account::Gettable::account  */
 /*  /api/accounts?address=arkAddress  */
-std::unique_ptr<ARK::Account[]> ARK::API::Account::Gettable::account(
+ARK::Account ARK::API::Account::Gettable::account(
     ARK::Utilities::Network::Connector& netManager,
     const Address& arkAddress)
 {

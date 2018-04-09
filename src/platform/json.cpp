@@ -60,20 +60,21 @@ public:
 	}
 
 	// /api/accounts
-	std::unique_ptr<ARK::Account[]> accounts_fromJSON(const char* const json_str) override {
-		return parse_array<Account>(json_str, "account", [] (const Poco::JSON::Object::Ptr& account) {
-			return ARK::Account(
-				account->getValue<std::string>("address").c_str(),
-				account->getValue<std::string>("unconfirmedBalance").c_str(),
-				account->getValue<std::string>("balance").c_str(),
-				account->getValue<std::string>("publicKey").c_str(),
-				account->getValue<int>("unconfirmedSignature"),
-				account->getValue<int>("secondSignature"),
-				account->getValue<std::string>("secondPublicKey").c_str(),
-				account->getValue<std::string>("multisignatures").c_str(),
-				account->getValue<std::string>("u_multisignatures").c_str()
-			);
-		});
+	ARK::Account accounts_fromJSON(const char* const json_str) override {
+		auto object = parse(json_str);
+		const auto block = object->get("account");
+		object = block.extract<Poco::JSON::Object::Ptr>();
+		return ARK::Account(
+			object->getValue<std::string>("address").c_str(),
+			object->getValue<std::string>("unconfirmedBalance").c_str(),
+			object->getValue<std::string>("balance").c_str(),
+			object->getValue<std::string>("publicKey").c_str(),
+			object->getValue<int>("unconfirmedSignature"),
+			object->getValue<int>("secondSignature"),
+			object->getValue<std::string>("secondPublicKey").c_str(),
+			object->getValue<std::string>("multisignatures").c_str(),
+			object->getValue<std::string>("u_multisignatures").c_str()
+		);
 	}
 	
 	//TODO: /api/accounts/top 
